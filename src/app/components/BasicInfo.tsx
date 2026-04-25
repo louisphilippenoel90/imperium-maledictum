@@ -1,14 +1,25 @@
 'use client';
 
-import { BasicInfo } from '@/app/types/sheet';
+import { BasicInfo, Characteristics, Characteristic } from '@/app/types/sheet';
 
 interface BasicInfoProps {
-	data: BasicInfo;
-	onChange: (field: keyof BasicInfo, value: string) => void;
+	basic: BasicInfo;
+	characteristics: Characteristics;
+	onBasicChange: (field: keyof BasicInfo, value: string) => void;
+	onCharacteristicChange: (
+		charKey: keyof Characteristics,
+		field: keyof Characteristic,
+		value: string,
+	) => void;
 }
 
-export default function BasicInfoSection({ data, onChange }: BasicInfoProps) {
-	const fields: { label: string; id: keyof BasicInfo; placeholder: string }[] = [
+export default function BasicInfoSection({
+	basic,
+	characteristics,
+	onBasicChange,
+	onCharacteristicChange,
+}: BasicInfoProps) {
+	const basicFields: { label: string; id: keyof BasicInfo; placeholder: string }[] = [
 		{ label: 'ORIGIN', id: 'origin', placeholder: 'Homeworld / Forge World' },
 		{ label: 'FACTION', id: 'faction', placeholder: 'Astra Militarum, Inquisition' },
 		{ label: 'ROLE', id: 'role', placeholder: 'Class / Specialty' },
@@ -27,30 +38,69 @@ export default function BasicInfoSection({ data, onChange }: BasicInfoProps) {
 		},
 	];
 
+	const characteristicKeys: { key: keyof Characteristics; label: string }[] = [
+		{ key: 'ws', label: 'WS' },
+		{ key: 'bs', label: 'BS' },
+		{ key: 'str', label: 'STR' },
+		{ key: 'tgh', label: 'TGH' },
+		{ key: 'ag', label: 'AG' },
+		{ key: 'int', label: 'INT' },
+		{ key: 'per', label: 'PER' },
+		{ key: 'wil', label: 'WIL' },
+		{ key: 'fel', label: 'FEL' },
+	];
+
+	const calculateCurrent = (starting: string, advances: string): string => {
+		const startNum = parseInt(starting) || 0;
+		const advNum = parseInt(advances) || 0;
+		return (startNum + advNum).toString();
+	};
+
+	// Guard against undefined characteristics
+	const getCharacteristic = (key: keyof Characteristics) => {
+		return characteristics?.[key] || { starting: '', advances: '', current: '0' };
+	};
+
+	const handleStartingChange = (charKey: keyof Characteristics, value: string) => {
+		onCharacteristicChange(charKey, 'starting', value);
+		const advances = getCharacteristic(charKey).advances;
+		const current = calculateCurrent(value, advances);
+		onCharacteristicChange(charKey, 'current', current);
+	};
+
+	const handleAdvancesChange = (charKey: keyof Characteristics, value: string) => {
+		onCharacteristicChange(charKey, 'advances', value);
+		const starting = getCharacteristic(charKey).starting;
+		const current = calculateCurrent(starting, value);
+		onCharacteristicChange(charKey, 'current', current);
+	};
+
 	return (
 		<div className='form-section'>
 			<h2 className='section-title'>📜 ORIGIN & IDENTITY</h2>
 			<div className='grid-2cols'>
-				{fields.map((field) => (
+				{basicFields.map((field) => (
 					<div key={field.id} className='field-group'>
 						<label className='field-label'>{field.label}</label>
 						<input
 							type='text'
-							value={data[field.id]}
-							onChange={(e) => onChange(field.id, e.target.value)}
+							value={basic[field.id]}
+							onChange={(e) => onBasicChange(field.id, e.target.value)}
 							placeholder={field.placeholder}
 							className='text-input'
 						/>
 					</div>
 				))}
 			</div>
+
+			{/* XP Section */}
 			<div className='grid-2cols mt-4'>
 				<div className='field-group'>
 					<label className='field-label'>CURRENT XP</label>
 					<input
 						type='text'
-						value={data.currentXp}
-						onChange={(e) => onChange('currentXp', e.target.value)}
+						value={basic.currentXp}
+						onChange={(e) => onBasicChange('currentXp', e.target.value)}
 						placeholder='0'
 						className='text-input'
 					/>
@@ -59,22 +109,155 @@ export default function BasicInfoSection({ data, onChange }: BasicInfoProps) {
 					<label className='field-label'>SPENT XP</label>
 					<input
 						type='text'
-						value={data.spentXp}
-						onChange={(e) => onChange('spentXp', e.target.value)}
+						value={basic.spentXp}
+						onChange={(e) => onBasicChange('spentXp', e.target.value)}
 						placeholder='0'
 						className='text-input'
 					/>
 				</div>
 			</div>
-			<div className='field-group mt-4'>
-				<label className='field-label'>CHARACTERISTICS (notable)</label>
-				<input
-					type='text'
-					value={data.characteristicsRaw}
-					onChange={(e) => onChange('characteristicsRaw', e.target.value)}
-					placeholder='e.g., WS 35, BS 40, S 32...'
-					className='text-input'
-				/>
+
+			{/* CHARACTERISTICS TABLE - Horizontal layout: characteristics as columns */}
+			<div className='mt-4'>
+				<h3 className='section-title' style={{ fontSize: '1.2rem', marginTop: '8px' }}>
+					⚔️ CHARACTERISTICS
+				</h3>
+				<div className='characteristics-table' style={{ overflowX: 'auto' }}>
+					<table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '650px' }}>
+						<thead>
+							<tr>
+								<th
+									style={{
+										padding: '10px',
+										borderBottom: '2px solid #b58b4b',
+										textAlign: 'left',
+										minWidth: '100px',
+									}}
+								></th>
+								{characteristicKeys.map((char) => (
+									<th
+										key={char.key}
+										style={{
+											padding: '10px',
+											borderBottom: '2px solid #b58b4b',
+											textAlign: 'center',
+											fontWeight: 'bold',
+										}}
+									>
+										{char.label}
+									</th>
+								))}
+							</tr>
+						</thead>
+						<tbody>
+							{/* STARTING row */}
+							<tr>
+								<td
+									style={{
+										padding: '8px',
+										borderBottom: '1px solid #e2cfaa',
+										fontWeight: 'bold',
+										backgroundColor: '#f5efdf',
+									}}
+								>
+									STARTING
+								</td>
+								{characteristicKeys.map((char) => (
+									<td
+										key={char.key}
+										style={{
+											padding: '8px',
+											borderBottom: '1px solid #e2cfaa',
+											textAlign: 'center',
+										}}
+									>
+										<input
+											type='text'
+											value={characteristics[char.key].starting}
+											onChange={(e) => handleStartingChange(char.key, e.target.value)}
+											placeholder='0'
+											style={{ width: '70px', textAlign: 'center' }}
+											className='text-input'
+										/>
+									</td>
+								))}
+							</tr>
+							{/* ADVANCES row */}
+							<tr>
+								<td
+									style={{
+										padding: '8px',
+										borderBottom: '1px solid #e2cfaa',
+										fontWeight: 'bold',
+										backgroundColor: '#f5efdf',
+									}}
+								>
+									ADVANCES
+								</td>
+								{characteristicKeys.map((char) => (
+									<td
+										key={char.key}
+										style={{
+											padding: '8px',
+											borderBottom: '1px solid #e2cfaa',
+											textAlign: 'center',
+										}}
+									>
+										<input
+											type='text'
+											value={characteristics[char.key].advances}
+											onChange={(e) => handleAdvancesChange(char.key, e.target.value)}
+											placeholder='0'
+											style={{ width: '70px', textAlign: 'center' }}
+											className='text-input'
+										/>
+									</td>
+								))}
+							</tr>
+							{/* CURRENT row (calculated, read-only) */}
+							<tr>
+								<td
+									style={{
+										padding: '8px',
+										borderBottom: '1px solid #e2cfaa',
+										fontWeight: 'bold',
+										backgroundColor: '#e9dfcb',
+									}}
+								>
+									CURRENT
+								</td>
+								{characteristicKeys.map((char) => (
+									<td
+										key={char.key}
+										style={{
+											padding: '8px',
+											borderBottom: '1px solid #e2cfaa',
+											textAlign: 'center',
+										}}
+									>
+										<input
+											type='text'
+											value={characteristics[char.key].current}
+											readOnly
+											style={{
+												width: '70px',
+												textAlign: 'center',
+												backgroundColor: '#e9dfcb',
+												fontWeight: 'bold',
+											}}
+											className='text-input'
+										/>
+									</td>
+								))}
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div
+					style={{ fontSize: '0.7rem', color: '#846b44', marginTop: '8px', fontStyle: 'italic' }}
+				>
+					※ CURRENT = STARTING + ADVANCES (auto-calculated)
+				</div>
 			</div>
 		</div>
 	);

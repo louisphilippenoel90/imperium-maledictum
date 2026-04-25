@@ -13,7 +13,24 @@ export interface BasicInfo {
 	distinguishingFeatures: string;
 	currentXp: string;
 	spentXp: string;
-	characteristicsRaw: string;
+}
+
+export interface Characteristic {
+	starting: string;
+	advances: string;
+	current: string;
+}
+
+export interface Characteristics {
+	ws: Characteristic; // Weapon Skill
+	bs: Characteristic; // Ballistic Skill
+	str: Characteristic; // Strength
+	tgh: Characteristic; // Toughness
+	ag: Characteristic; // Agility
+	int: Characteristic; // Intelligence
+	per: Characteristic; // Perception
+	wil: Characteristic; // Willpower
+	fel: Characteristic; // Fellowship
 }
 
 export interface FateCorruption {
@@ -27,9 +44,18 @@ export interface FateCorruption {
 export interface SkillData {
 	skillName: string;
 	characteristic: string;
-	advances: string;
-	total: string;
+	manualInput: string; // New: user's manual input value
+	advances: string; // Each point adds +5
+	total: string; // Calculated: manualInput + (advances × 5)
 	specialisation: string;
+}
+
+export interface SpecialisationData {
+	id: string;
+	specialisation: string;
+	skill: string;
+	adv: string;
+	total: string;
 }
 
 export interface GoalsInfluence {
@@ -40,8 +66,10 @@ export interface GoalsInfluence {
 
 export interface CharacterSheetData {
 	basic: BasicInfo;
+	characteristics: Characteristics;
 	fateCorruption: FateCorruption;
 	skillsData: SkillData[];
+	specialisations: SpecialisationData[];
 	goalsInfluence: GoalsInfluence;
 }
 
@@ -83,7 +111,18 @@ export const defaultBasicInfo: BasicInfo = {
 	distinguishingFeatures: '',
 	currentXp: '0',
 	spentXp: '0',
-	characteristicsRaw: '',
+};
+
+export const defaultCharacteristics: Characteristics = {
+	ws: { starting: '', advances: '', current: '0' },
+	bs: { starting: '', advances: '', current: '0' },
+	str: { starting: '', advances: '', current: '0' },
+	tgh: { starting: '', advances: '', current: '0' },
+	ag: { starting: '', advances: '', current: '0' },
+	int: { starting: '', advances: '', current: '0' },
+	per: { starting: '', advances: '', current: '0' },
+	wil: { starting: '', advances: '', current: '0' },
+	fel: { starting: '', advances: '', current: '0' },
 };
 
 export const defaultFateCorruption: FateCorruption = {
@@ -103,7 +142,10 @@ export const defaultGoalsInfluence: GoalsInfluence = {
 export const defaultSkillsData: SkillData[] = SKILLS_LIST.map((skill) => ({
 	skillName: skill.name,
 	characteristic: skill.characteristic,
+	manualInput: '',
 	advances: '',
 	total: '',
 	specialisation: '',
 }));
+
+export const defaultSpecialisationsData: SpecialisationData[] = [];
