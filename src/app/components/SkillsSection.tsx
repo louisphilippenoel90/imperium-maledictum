@@ -60,98 +60,155 @@ export default function SkillsSection({
 		onSpecialisationChange(index, 'total', total);
 	};
 
-	// Split skills into two columns for better layout
-	const midPoint = Math.ceil(skills.length / 2);
-	const leftSkills = skills.slice(0, midPoint);
-	const rightSkills = skills.slice(midPoint);
+	// Split skills into two tables (keep original indices for handlers)
+	const findSkillIndex = (name: string) =>
+		skills.findIndex((s) => (s.skillName || '').toLowerCase() === name.toLowerCase());
+
+	const athleticIdx = findSkillIndex('athletics');
+	const medicaeIdx = findSkillIndex('medicae');
+	const meleeIdx = findSkillIndex('melee');
+	const techIdx = findSkillIndex('tech');
+
+	const sliceByIndices = (startIdx: number, endIdx: number) => {
+		if (startIdx < 0 || endIdx < 0) return [];
+		const from = Math.min(startIdx, endIdx);
+		const to = Math.max(startIdx, endIdx);
+		return skills.slice(from, to + 1).map((skill, i) => ({ skill, index: from + i }));
+	};
+
+	const skillsTable1 = sliceByIndices(athleticIdx, medicaeIdx);
+	const skillsTable2 = sliceByIndices(meleeIdx, techIdx);
+
+	// Fallback: if the expected skills aren't found, keep old behavior (split in half)
+	const fallbackMidPoint = Math.ceil(skills.length / 2);
+	const fallbackTable1 = skills.slice(0, fallbackMidPoint).map((skill, i) => ({ skill, index: i }));
+	const fallbackTable2 = skills
+		.slice(fallbackMidPoint)
+		.map((skill, i) => ({ skill, index: fallbackMidPoint + i }));
+
+	const leftTable = skillsTable1.length > 0 ? skillsTable1 : fallbackTable1;
+	const rightTable = skillsTable2.length > 0 ? skillsTable2 : fallbackTable2;
 
 	return (
 		<div className='form-section'>
 			<h2 className='section-title'>⚙️ SKILLS & SPECIALISATIONS</h2>
 
 			{/* SKILLS TABLE */}
-			<div className='skills-table-container' style={{ overflowX: 'auto', marginBottom: '32px' }}>
-				<table style={{ width: '100%', borderCollapse: 'collapse' }}>
-					<thead>
-						<tr style={{ backgroundColor: '#e9dfcb' }}>
-							<th style={{ padding: '10px', borderBottom: '2px solid #b58b4b', textAlign: 'left' }}>
-								Skill
-							</th>
-							<th style={{ padding: '10px', borderBottom: '2px solid #b58b4b', textAlign: 'left' }}>
-								Characteristic
-							</th>
-							<th
-								style={{ padding: '10px', borderBottom: '2px solid #b58b4b', textAlign: 'center' }}
-							>
-								Manual Input
-							</th>
-							<th
-								style={{ padding: '10px', borderBottom: '2px solid #b58b4b', textAlign: 'center' }}
-							>
-								ADV. (+5 each)
-							</th>
-							<th
-								style={{ padding: '10px', borderBottom: '2px solid #b58b4b', textAlign: 'center' }}
-							>
-								TOTAL
-							</th>
-						</tr>
-					</thead>
-					<tbody>
-						{skills.map((skill, idx) => (
-							<tr key={idx} style={{ borderBottom: '1px solid #e2cfaa' }}>
-								<td style={{ padding: '8px', fontWeight: 'bold' }}>{skill.skillName}</td>
-								<td style={{ padding: '8px' }}>
-									<span
-										className='skill-stat'
+			<div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start', marginBottom: '32px' }}>
+				{[
+					{ data: leftTable, keyPrefix: 'left' },
+					{ data: rightTable, keyPrefix: 'right' },
+				].map(({ data, keyPrefix }) => (
+					<div
+						key={keyPrefix}
+						className='skills-table-container'
+						style={{ flex: '1 1 0', minWidth: '420px', overflowX: 'auto' }}
+					>
+						<table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
+							<thead>
+								<tr style={{ backgroundColor: '#e9dfcb' }}>
+									<th
 										style={{
-											background: '#e9dfcb',
-											padding: '4px 10px',
-											borderRadius: '20px',
-											fontSize: '0.75rem',
+											padding: '10px',
+											borderBottom: '2px solid #b58b4b',
+											textAlign: 'left',
+											width: '38%',
 										}}
 									>
-										{skill.characteristic}
-									</span>
-								</td>
-								<td style={{ padding: '8px', textAlign: 'center' }}>
-									<input
-										type='text'
-										value={skill.manualInput || ''}
-										onChange={(e) => handleManualInputChange(idx, e.target.value)}
-										placeholder='0'
-										style={{ width: '80px', textAlign: 'center' }}
-										className='text-input'
-									/>
-								</td>
-								<td style={{ padding: '8px', textAlign: 'center' }}>
-									<input
-										type='text'
-										value={skill.advances}
-										onChange={(e) => handleAdvChange(idx, e.target.value)}
-										placeholder='0'
-										style={{ width: '80px', textAlign: 'center' }}
-										className='text-input'
-									/>
-								</td>
-								<td style={{ padding: '8px', textAlign: 'center' }}>
-									<input
-										type='text'
-										value={skill.total}
-										readOnly
+										Skill
+									</th>
+									<th
+										colSpan={2}
 										style={{
-											width: '80px',
-											textAlign: 'center',
-											backgroundColor: '#e9dfcb',
-											fontWeight: 'bold',
+											padding: '10px',
+											borderBottom: '2px solid #b58b4b',
+											textAlign: 'left',
+											width: '32%',
 										}}
-										className='text-input'
-									/>
-								</td>
-							</tr>
-						))}
-					</tbody>
-				</table>
+									>
+										Characteristic
+									</th>
+									<th
+										style={{
+											padding: '10px',
+											borderBottom: '2px solid #b58b4b',
+											textAlign: 'center',
+											width: '15%',
+										}}
+									>
+										ADV.
+									</th>
+									<th
+										style={{
+											padding: '10px',
+											borderBottom: '2px solid #b58b4b',
+											textAlign: 'center',
+											width: '15%',
+										}}
+									>
+										TOTAL
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								{data.map(({ skill, index }) => (
+									<tr key={`${keyPrefix}-${index}`} style={{ borderBottom: '1px solid #e2cfaa' }}>
+										<td style={{ padding: '8px', fontWeight: 'bold', overflow: 'hidden' }}>
+											{skill.skillName}
+										</td>
+										<td style={{ padding: '8px' }}>
+											<span
+												className='skill-stat'
+												style={{
+													background: '#e9dfcb',
+													padding: '4px 10px',
+													borderRadius: '20px',
+													fontSize: '0.75rem',
+												}}
+											>
+												{skill.characteristic}
+											</span>
+										</td>
+										<td style={{ padding: '8px', textAlign: 'center' }}>
+											<input
+												type='text'
+												value={skill.manualInput || ''}
+												onChange={(e) => handleManualInputChange(index, e.target.value)}
+												placeholder='0'
+												style={{ width: '60px', textAlign: 'center' }}
+												className='text-input'
+											/>
+										</td>
+										<td style={{ padding: '8px', textAlign: 'center' }}>
+											<input
+												type='text'
+												value={skill.advances}
+												onChange={(e) => handleAdvChange(index, e.target.value)}
+												placeholder='0'
+												style={{ width: '60px', textAlign: 'center' }}
+												className='text-input'
+											/>
+										</td>
+										<td style={{ padding: '8px', textAlign: 'center' }}>
+											<input
+												type='text'
+												value={skill.total}
+												readOnly
+												style={{
+													width: '60px',
+													textAlign: 'center',
+													backgroundColor: '#e9dfcb',
+													fontWeight: 'bold',
+												}}
+												className='text-input'
+											/>
+										</td>
+									</tr>
+								))}
+							</tbody>
+						</table>
+					</div>
+				))}
 			</div>
 
 			{/* SPECIALISATIONS TABLE */}
