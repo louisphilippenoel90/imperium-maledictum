@@ -5,12 +5,13 @@ import { FateCorruption } from '@/app/types/sheet';
 interface FateCorruptionProps {
 	data: FateCorruption;
 	onChange: (field: keyof FateCorruption, value: string) => void;
+	showTitle?: boolean;
 }
 
-export default function FateCorruptionSection({ data, onChange }: FateCorruptionProps) {
+export default function FateCorruptionSection({ data, onChange, showTitle = true }: FateCorruptionProps) {
 	return (
-		<div className='form-section'>
-			<h2 className='section-title'>🔥 FATE & CORRUPTION</h2>
+		<div>
+			{showTitle ? <h2 className='section-title'>🔥 FATE & CORRUPTION</h2> : null}
 			<div className='grid-2cols'>
 				<div className='field-group'>
 					<label className='field-label'>FATE — CURRENT</label>

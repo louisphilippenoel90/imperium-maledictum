@@ -26,6 +26,7 @@ import ActionButtons from './ActionButtons';
 import { SpecialisationData } from './SkillsSection';
 import { CharacterStatsProvider } from '@/app/context/CharacterStatsContext';
 import { ExportJsonProvider, useExportJson } from '@/app/context/ExportJsonContext';
+import CollapseSection from './CollapseSection';
 
 const defaultSpecialisationsData: SpecialisationData[] = [];
 
@@ -223,23 +224,43 @@ function CharacterSheetInner() {
 					</div>
 
 					<CharacterStatsProvider characteristics={characteristics}>
-						<BasicInfoSection
-							basic={basic}
-							characteristics={characteristics}
-							onBasicChange={handleBasicChange}
-							onCharacteristicChange={handleCharacteristicChange}
-						/>
+						<CollapseSection title='📜 ORIGIN & IDENTITY' defaultOpen>
+							<BasicInfoSection
+								showTitle={false}
+								basic={basic}
+								characteristics={characteristics}
+								onBasicChange={handleBasicChange}
+								onCharacteristicChange={handleCharacteristicChange}
+							/>
+						</CollapseSection>
 
-						<FateCorruptionSection data={fateCorruption} onChange={handleFateCorruptionChange} />
-						<SkillsSection
-							skills={skills}
-							specialisations={specialisations}
-							onSkillChange={handleSkillChange}
-							onSpecialisationChange={handleSpecialisationChange}
-							onAddSpecialisation={handleAddSpecialisation}
-							onRemoveSpecialisation={handleRemoveSpecialisation}
-						/>
-						<GoalsInfluenceSection data={goalsInfluence} onChange={handleGoalsInfluenceChange} />
+						<CollapseSection title='🔥 FATE & CORRUPTION' defaultOpen={false}>
+							<FateCorruptionSection
+								showTitle={false}
+								data={fateCorruption}
+								onChange={handleFateCorruptionChange}
+							/>
+						</CollapseSection>
+
+						<CollapseSection title='⚙️ SKILLS & SPECIALISATIONS' defaultOpen>
+							<SkillsSection
+								showTitle={false}
+								skills={skills}
+								specialisations={specialisations}
+								onSkillChange={handleSkillChange}
+								onSpecialisationChange={handleSpecialisationChange}
+								onAddSpecialisation={handleAddSpecialisation}
+								onRemoveSpecialisation={handleRemoveSpecialisation}
+							/>
+						</CollapseSection>
+
+						<CollapseSection title='🎯 GOALS & INFLUENCE' defaultOpen={false}>
+							<GoalsInfluenceSection
+								showTitle={false}
+								data={goalsInfluence}
+								onChange={handleGoalsInfluenceChange}
+							/>
+						</CollapseSection>
 					</CharacterStatsProvider>
 
 					<ActionButtons onExport={exportToJSON} onImport={importFromJSON} onReset={resetAll} />

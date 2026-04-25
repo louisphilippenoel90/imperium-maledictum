@@ -5,12 +5,13 @@ import { GoalsInfluence } from '@/app/types/sheet';
 interface GoalsInfluenceProps {
 	data: GoalsInfluence;
 	onChange: (field: keyof GoalsInfluence, value: string) => void;
+	showTitle?: boolean;
 }
 
-export default function GoalsInfluenceSection({ data, onChange }: GoalsInfluenceProps) {
+export default function GoalsInfluenceSection({ data, onChange, showTitle = true }: GoalsInfluenceProps) {
 	return (
-		<div className='form-section'>
-			<h2 className='section-title'>🎯 GOALS & INFLUENCE</h2>
+		<div>
+			{showTitle ? <h2 className='section-title'>🎯 GOALS & INFLUENCE</h2> : null}
 			<div className='field-group mb-4'>
 				<label className='field-label'>GOALS (short / long term)</label>
 				<textarea

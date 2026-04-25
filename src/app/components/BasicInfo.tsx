@@ -11,6 +11,7 @@ interface BasicInfoProps {
 		field: keyof Characteristic,
 		value: string,
 	) => void;
+	showTitle?: boolean;
 }
 
 export default function BasicInfoSection({
@@ -18,6 +19,7 @@ export default function BasicInfoSection({
 	characteristics,
 	onBasicChange,
 	onCharacteristicChange,
+	showTitle = true,
 }: BasicInfoProps) {
 	const basicFields: { label: string; id: keyof BasicInfo; placeholder: string }[] = [
 		{ label: 'ORIGIN', id: 'origin', placeholder: 'Homeworld / Forge World' },
@@ -76,8 +78,8 @@ export default function BasicInfoSection({
 	};
 
 	return (
-		<div className='form-section'>
-			<h2 className='section-title'>📜 ORIGIN & IDENTITY</h2>
+		<div>
+			{showTitle ? <h2 className='section-title'>📜 ORIGIN & IDENTITY</h2> : null}
 			<div className='grid-2cols'>
 				{basicFields.map((field) => (
 					<div key={field.id} className='field-group'>

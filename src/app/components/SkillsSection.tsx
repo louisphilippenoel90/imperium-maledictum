@@ -11,6 +11,7 @@ interface SkillsSectionProps {
 	onSpecialisationChange: (index: number, field: keyof SpecialisationData, value: string) => void;
 	onAddSpecialisation: () => void;
 	onRemoveSpecialisation: (index: number) => void;
+	showTitle?: boolean;
 }
 
 export interface SpecialisationData {
@@ -28,6 +29,7 @@ export default function SkillsSection({
 	onSpecialisationChange,
 	onAddSpecialisation,
 	onRemoveSpecialisation,
+	showTitle = true,
 }: SkillsSectionProps) {
 	const { characteristics } = useCharacterStats();
 
@@ -149,8 +151,8 @@ export default function SkillsSection({
 	const rightTable = skillsTable2.length > 0 ? skillsTable2 : fallbackTable2;
 
 	return (
-		<div className='form-section'>
-			<h2 className='section-title'>⚙️ SKILLS & SPECIALISATIONS</h2>
+		<div>
+			{showTitle ? <h2 className='section-title'>⚙️ SKILLS & SPECIALISATIONS</h2> : null}
 
 			{/* SKILLS TABLE */}
 			<div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start', marginBottom: '32px' }}>
