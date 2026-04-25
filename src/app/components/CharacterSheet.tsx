@@ -9,11 +9,13 @@ import {
 	GoalsInfluence,
 	SkillData,
 	Characteristic,
+	WoundsData,
 	defaultBasicInfo,
 	defaultCharacteristics,
 	defaultFateCorruption,
 	defaultGoalsInfluence,
 	defaultSkillsData,
+	defaultWoundsData,
 	SKILLS_LIST,
 } from '@/app/types/sheet';
 import { saveToLocalStorage, loadFromLocalStorage, clearLocalStorage } from '@/app/utils/storage';
@@ -27,6 +29,7 @@ import { SpecialisationData } from './page1/SkillsSection';
 import { CharacterStatsProvider } from '@/app/context/CharacterStatsContext';
 import { ExportJsonProvider, useExportJson } from '@/app/context/ExportJsonContext';
 import CollapseSection from './CollapseSection';
+import WoundsSection from './page2/WoundsSection';
 
 const defaultSpecialisationsData: SpecialisationData[] = [];
 
@@ -37,6 +40,7 @@ function CharacterSheetInner() {
 	const [fateCorruption, setFateCorruption] = useState<FateCorruption>(defaultFateCorruption);
 	const [skills, setSkills] = useState<SkillData[]>(defaultSkillsData);
 	const [goalsInfluence, setGoalsInfluence] = useState<GoalsInfluence>(defaultGoalsInfluence);
+	const [wounds, setWounds] = useState<WoundsData>(defaultWoundsData);
 	const [status, setStatus] = useState('✅ Ready — fill fields, export/import JSON.');
 	const [specialisations, setSpecialisations] = useState<SpecialisationData[]>(
 		defaultSpecialisationsData,
@@ -55,6 +59,7 @@ function CharacterSheetInner() {
 			setFateCorruption(saved.fateCorruption || defaultFateCorruption);
 			setSkills(saved.skillsData || defaultSkillsData);
 			setGoalsInfluence(saved.goalsInfluence || defaultGoalsInfluence);
+			setWounds(saved.wounds || defaultWoundsData);
 			setSpecialisations(saved.specialisations || defaultSpecialisationsData);
 			setStatus('📀 Loaded previous session from browser storage.');
 			setTimeout(() => setStatus('✅ Ready — fill fields, export/import JSON.'), 3000);
@@ -69,14 +74,15 @@ function CharacterSheetInner() {
 			fateCorruption,
 			skillsData: skills,
 			goalsInfluence,
+			wounds,
 			specialisations,
 		};
 		saveToLocalStorage(fullData);
-	}, [basic, characteristics, fateCorruption, skills, goalsInfluence, specialisations]);
+	}, [basic, characteristics, fateCorruption, skills, goalsInfluence, wounds, specialisations]);
 
 	useEffect(() => {
 		autoSave();
-	}, [basic, characteristics, fateCorruption, skills, goalsInfluence, specialisations, autoSave]);
+	}, [basic, characteristics, fateCorruption, skills, goalsInfluence, wounds, specialisations, autoSave]);
 
 	const handleBasicChange = (field: keyof BasicInfo, value: string) => {
 		setBasic((prev) => ({ ...prev, [field]: value }));
@@ -116,6 +122,7 @@ function CharacterSheetInner() {
 			fateCorruption,
 			skillsData: skills,
 			goalsInfluence,
+			wounds,
 			specialisations,
 		};
 		const exportObj = {
@@ -183,6 +190,7 @@ function CharacterSheetInner() {
 					};
 					setGoalsInfluence(migrated);
 				}
+				if (parsed.wounds) setWounds(parsed.wounds);
 				if (parsed.specialisations && Array.isArray(parsed.specialisations)) {
 					setSpecialisations(parsed.specialisations);
 				}
@@ -203,6 +211,7 @@ function CharacterSheetInner() {
 			setFateCorruption(defaultFateCorruption);
 			setSkills(defaultSkillsData);
 			setGoalsInfluence(defaultGoalsInfluence);
+			setWounds(defaultWoundsData);
 			setSpecialisations(defaultSpecialisationsData);
 			clearLocalStorage();
 			setStatus('🧹 All fields cleared.');
@@ -324,10 +333,8 @@ function CharacterSheetInner() {
 						) : null}
 
 						{page === 2 ? (
-							<CollapseSection title='🧾 PAGE 2' defaultOpen>
-								<div style={{ color: '#846b44', fontStyle: 'italic' }}>
-									Page 2 is ready. Tell me which sections you want on page 2.
-								</div>
+							<CollapseSection title='🩸 WOUNDS' defaultOpen>
+								<WoundsSection showTitle={false} data={wounds} onChange={setWounds} />
 							</CollapseSection>
 						) : null}
 

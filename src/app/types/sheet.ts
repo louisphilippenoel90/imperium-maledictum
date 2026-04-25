@@ -82,6 +82,17 @@ export interface GoalsInfluence {
 	talents: TalentRow[];
 }
 
+export interface CriticalWoundRow {
+	id: string;
+	location: string;
+	effect: string;
+}
+
+export interface WoundsData {
+	current: string;
+	critical: CriticalWoundRow[];
+}
+
 export interface CharacterSheetData {
 	basic: BasicInfo;
 	characteristics: Characteristics;
@@ -89,6 +100,7 @@ export interface CharacterSheetData {
 	skillsData: SkillData[];
 	specialisations: SpecialisationData[];
 	goalsInfluence: GoalsInfluence;
+	wounds: WoundsData;
 }
 
 export const SKILLS_LIST = [
@@ -160,6 +172,11 @@ export const defaultGoalsInfluence: GoalsInfluence = {
 	otherCurrencies: '',
 	influences: [],
 	talents: [],
+};
+
+export const defaultWoundsData: WoundsData = {
+	current: '',
+	critical: [],
 };
 
 export const defaultSkillsData: SkillData[] = SKILLS_LIST.map((skill) => ({
