@@ -93,6 +93,22 @@ export interface WoundsData {
 	critical: CriticalWoundRow[];
 }
 
+export interface WeaponRow {
+	id: string;
+	name: string;
+	specialisationId: string; // references Skills specialisation id
+	test: string;
+	damage: string;
+	range: string;
+	mag: string;
+	enc: string;
+	traits: string;
+}
+
+export interface WeaponsData {
+	weapons: WeaponRow[];
+}
+
 export interface CharacterSheetData {
 	basic: BasicInfo;
 	characteristics: Characteristics;
@@ -101,6 +117,7 @@ export interface CharacterSheetData {
 	specialisations: SpecialisationData[];
 	goalsInfluence: GoalsInfluence;
 	wounds: WoundsData;
+	weapons: WeaponsData;
 }
 
 export const SKILLS_LIST = [
@@ -177,6 +194,10 @@ export const defaultGoalsInfluence: GoalsInfluence = {
 export const defaultWoundsData: WoundsData = {
 	current: '',
 	critical: [],
+};
+
+export const defaultWeaponsData: WeaponsData = {
+	weapons: [],
 };
 
 export const defaultSkillsData: SkillData[] = SKILLS_LIST.map((skill) => ({

@@ -10,12 +10,14 @@ import {
 	SkillData,
 	Characteristic,
 	WoundsData,
+	WeaponsData,
 	defaultBasicInfo,
 	defaultCharacteristics,
 	defaultFateCorruption,
 	defaultGoalsInfluence,
 	defaultSkillsData,
 	defaultWoundsData,
+	defaultWeaponsData,
 	SKILLS_LIST,
 } from '@/app/types/sheet';
 import { saveToLocalStorage, loadFromLocalStorage, clearLocalStorage } from '@/app/utils/storage';
@@ -30,6 +32,7 @@ import { CharacterStatsProvider } from '@/app/context/CharacterStatsContext';
 import { ExportJsonProvider, useExportJson } from '@/app/context/ExportJsonContext';
 import CollapseSection from './CollapseSection';
 import WoundsSection from './page2/WoundsSection';
+import WeaponsSection from './page2/WeaponsSection';
 
 const defaultSpecialisationsData: SpecialisationData[] = [];
 
@@ -41,6 +44,7 @@ function CharacterSheetInner() {
 	const [skills, setSkills] = useState<SkillData[]>(defaultSkillsData);
 	const [goalsInfluence, setGoalsInfluence] = useState<GoalsInfluence>(defaultGoalsInfluence);
 	const [wounds, setWounds] = useState<WoundsData>(defaultWoundsData);
+	const [weapons, setWeapons] = useState<WeaponsData>(defaultWeaponsData);
 	const [status, setStatus] = useState('✅ Ready — fill fields, export/import JSON.');
 	const [specialisations, setSpecialisations] = useState<SpecialisationData[]>(
 		defaultSpecialisationsData,
@@ -60,6 +64,7 @@ function CharacterSheetInner() {
 			setSkills(saved.skillsData || defaultSkillsData);
 			setGoalsInfluence(saved.goalsInfluence || defaultGoalsInfluence);
 			setWounds(saved.wounds || defaultWoundsData);
+			setWeapons(saved.weapons || defaultWeaponsData);
 			setSpecialisations(saved.specialisations || defaultSpecialisationsData);
 			setStatus('📀 Loaded previous session from browser storage.');
 			setTimeout(() => setStatus('✅ Ready — fill fields, export/import JSON.'), 3000);
@@ -75,14 +80,15 @@ function CharacterSheetInner() {
 			skillsData: skills,
 			goalsInfluence,
 			wounds,
+			weapons,
 			specialisations,
 		};
 		saveToLocalStorage(fullData);
-	}, [basic, characteristics, fateCorruption, skills, goalsInfluence, wounds, specialisations]);
+	}, [basic, characteristics, fateCorruption, skills, goalsInfluence, wounds, weapons, specialisations]);
 
 	useEffect(() => {
 		autoSave();
-	}, [basic, characteristics, fateCorruption, skills, goalsInfluence, wounds, specialisations, autoSave]);
+	}, [basic, characteristics, fateCorruption, skills, goalsInfluence, wounds, weapons, specialisations, autoSave]);
 
 	const handleBasicChange = (field: keyof BasicInfo, value: string) => {
 		setBasic((prev) => ({ ...prev, [field]: value }));
@@ -123,6 +129,7 @@ function CharacterSheetInner() {
 			skillsData: skills,
 			goalsInfluence,
 			wounds,
+			weapons,
 			specialisations,
 		};
 		const exportObj = {
@@ -191,6 +198,7 @@ function CharacterSheetInner() {
 					setGoalsInfluence(migrated);
 				}
 				if (parsed.wounds) setWounds(parsed.wounds);
+				if (parsed.weapons) setWeapons(parsed.weapons);
 				if (parsed.specialisations && Array.isArray(parsed.specialisations)) {
 					setSpecialisations(parsed.specialisations);
 				}
@@ -212,6 +220,7 @@ function CharacterSheetInner() {
 			setSkills(defaultSkillsData);
 			setGoalsInfluence(defaultGoalsInfluence);
 			setWounds(defaultWoundsData);
+			setWeapons(defaultWeaponsData);
 			setSpecialisations(defaultSpecialisationsData);
 			clearLocalStorage();
 			setStatus('🧹 All fields cleared.');
@@ -333,9 +342,19 @@ function CharacterSheetInner() {
 						) : null}
 
 						{page === 2 ? (
-							<CollapseSection title='🩸 WOUNDS' defaultOpen>
-								<WoundsSection showTitle={false} data={wounds} onChange={setWounds} />
-							</CollapseSection>
+							<>
+								<CollapseSection title='🩸 WOUNDS' defaultOpen={false}>
+									<WoundsSection showTitle={false} data={wounds} onChange={setWounds} />
+								</CollapseSection>
+								<CollapseSection title='🗡️ WEAPONS' defaultOpen={false}>
+									<WeaponsSection
+										showTitle={false}
+										data={weapons}
+										onChange={setWeapons}
+										specialisations={specialisations}
+									/>
+								</CollapseSection>
+							</>
 						) : null}
 
 						{page === 3 ? (
