@@ -17,13 +17,13 @@ import {
 	SKILLS_LIST,
 } from '@/app/types/sheet';
 import { saveToLocalStorage, loadFromLocalStorage, clearLocalStorage } from '@/app/utils/storage';
-import BasicInfoSection from './BasicInfo';
-import FateCorruptionSection from './FateCorruption';
-import SkillsSection from './SkillsSection';
-import GoalsInfluenceSection from './GoalsInfluence';
+import BasicInfoSection from './page1/BasicInfo';
+import FateCorruptionSection from './page1/FateCorruption';
+import SkillsSection from './page1/SkillsSection';
+import GoalsInfluenceSection from './page1/GoalsInfluence';
 import ActionButtons from './ActionButtons';
 
-import { SpecialisationData } from './SkillsSection';
+import { SpecialisationData } from './page1/SkillsSection';
 import { CharacterStatsProvider } from '@/app/context/CharacterStatsContext';
 import { ExportJsonProvider, useExportJson } from '@/app/context/ExportJsonContext';
 import CollapseSection from './CollapseSection';
@@ -31,6 +31,7 @@ import CollapseSection from './CollapseSection';
 const defaultSpecialisationsData: SpecialisationData[] = [];
 
 function CharacterSheetInner() {
+	const [page, setPage] = useState<1 | 2 | 3>(1);
 	const [basic, setBasic] = useState<BasicInfo>(defaultBasicInfo);
 	const [characteristics, setCharacteristics] = useState<Characteristics>(defaultCharacteristics);
 	const [fateCorruption, setFateCorruption] = useState<FateCorruption>(defaultFateCorruption);
@@ -246,45 +247,135 @@ function CharacterSheetInner() {
 						<p className='italic text-amber-700 text-sm mt-1'>⚔️ CHARACTER SHEET ⚔️</p>
 					</div>
 
+					<div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}>
+						<div
+							style={{
+								display: 'flex',
+								gap: '8px',
+								background: 'rgba(233, 223, 203, 0.6)',
+								border: '1px solid #cfb87c',
+								borderRadius: '999px',
+								padding: '6px',
+							}}
+						>
+							{([1, 2, 3] as const).map((p) => (
+								<button
+									key={p}
+									type='button'
+									onClick={() => setPage(p)}
+									style={{
+										background: page === p ? '#5c3f28' : 'transparent',
+										border: 'none',
+										borderRadius: '999px',
+										padding: '8px 14px',
+										color: page === p ? '#fef0df' : '#4f351e',
+										cursor: 'pointer',
+										fontSize: '0.8rem',
+										fontWeight: 700,
+									}}
+								>
+									Page {p}
+								</button>
+							))}
+						</div>
+					</div>
+
 					<CharacterStatsProvider characteristics={characteristics}>
-						<CollapseSection title='📜 ORIGIN & IDENTITY' defaultOpen={false}>
-							<BasicInfoSection
-								showTitle={false}
-								basic={basic}
-								characteristics={characteristics}
-								onBasicChange={handleBasicChange}
-								onCharacteristicChange={handleCharacteristicChange}
-							/>
-						</CollapseSection>
+						{page === 1 ? (
+							<>
+								<CollapseSection title='📜 ORIGIN & IDENTITY' defaultOpen={false}>
+									<BasicInfoSection
+										showTitle={false}
+										basic={basic}
+										characteristics={characteristics}
+										onBasicChange={handleBasicChange}
+										onCharacteristicChange={handleCharacteristicChange}
+									/>
+								</CollapseSection>
 
-						<CollapseSection title='🔥 FATE & CORRUPTION' defaultOpen={false}>
-							<FateCorruptionSection
-								showTitle={false}
-								data={fateCorruption}
-								onChange={handleFateCorruptionChange}
-							/>
-						</CollapseSection>
+								<CollapseSection title='🔥 FATE & CORRUPTION' defaultOpen={false}>
+									<FateCorruptionSection
+										showTitle={false}
+										data={fateCorruption}
+										onChange={handleFateCorruptionChange}
+									/>
+								</CollapseSection>
 
-						<CollapseSection title='⚙️ SKILLS & SPECIALISATIONS' defaultOpen={false}>
-							<SkillsSection
-								showTitle={false}
-								skills={skills}
-								specialisations={specialisations}
-								onSkillChange={handleSkillChange}
-								onSpecialisationChange={handleSpecialisationChange}
-								onAddSpecialisation={handleAddSpecialisation}
-								onRemoveSpecialisation={handleRemoveSpecialisation}
-							/>
-						</CollapseSection>
+								<CollapseSection title='⚙️ SKILLS & SPECIALISATIONS' defaultOpen={false}>
+									<SkillsSection
+										showTitle={false}
+										skills={skills}
+										specialisations={specialisations}
+										onSkillChange={handleSkillChange}
+										onSpecialisationChange={handleSpecialisationChange}
+										onAddSpecialisation={handleAddSpecialisation}
+										onRemoveSpecialisation={handleRemoveSpecialisation}
+									/>
+								</CollapseSection>
 
-						<CollapseSection title='🎯 GOALS & INFLUENCE' defaultOpen={false}>
-							<GoalsInfluenceSection
-								showTitle={false}
-								data={goalsInfluence}
-								onChange={handleGoalsInfluenceReplace}
-							/>
-						</CollapseSection>
+								<CollapseSection title='🎯 GOALS & INFLUENCE' defaultOpen={false}>
+									<GoalsInfluenceSection
+										showTitle={false}
+										data={goalsInfluence}
+										onChange={handleGoalsInfluenceReplace}
+									/>
+								</CollapseSection>
+							</>
+						) : null}
+
+						{page === 2 ? (
+							<CollapseSection title='🧾 PAGE 2' defaultOpen>
+								<div style={{ color: '#846b44', fontStyle: 'italic' }}>
+									Page 2 is ready. Tell me which sections you want on page 2.
+								</div>
+							</CollapseSection>
+						) : null}
+
+						{page === 3 ? (
+							<CollapseSection title='🧾 PAGE 3' defaultOpen>
+								<div style={{ color: '#846b44', fontStyle: 'italic' }}>
+									Page 3 is ready. Tell me which sections you want on page 3.
+								</div>
+							</CollapseSection>
+						) : null}
 					</CharacterStatsProvider>
+
+					<div style={{ display: 'flex', justifyContent: 'space-between', gap: '12px', marginTop: '12px' }}>
+						<button
+							type='button'
+							onClick={() => setPage((p) => (p > 1 ? ((p - 1) as 1 | 2 | 3) : p))}
+							disabled={page === 1}
+							style={{
+								background: page === 1 ? '#d9cfba' : '#5c3f28',
+								border: 'none',
+								borderRadius: '999px',
+								padding: '8px 16px',
+								color: page === 1 ? '#846b44' : '#fef0df',
+								cursor: page === 1 ? 'not-allowed' : 'pointer',
+								fontSize: '0.8rem',
+								fontWeight: 700,
+							}}
+						>
+							← Prev
+						</button>
+						<button
+							type='button'
+							onClick={() => setPage((p) => (p < 3 ? ((p + 1) as 1 | 2 | 3) : p))}
+							disabled={page === 3}
+							style={{
+								background: page === 3 ? '#d9cfba' : '#5c3f28',
+								border: 'none',
+								borderRadius: '999px',
+								padding: '8px 16px',
+								color: page === 3 ? '#846b44' : '#fef0df',
+								cursor: page === 3 ? 'not-allowed' : 'pointer',
+								fontSize: '0.8rem',
+								fontWeight: 700,
+							}}
+						>
+							Next →
+						</button>
+					</div>
 
 					<ActionButtons onExport={exportToJSON} onImport={importFromJSON} onReset={resetAll} />
 
