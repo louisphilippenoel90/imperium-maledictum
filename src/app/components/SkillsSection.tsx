@@ -1,6 +1,8 @@
 'use client';
 
+import { useEffect } from 'react';
 import { SkillData, SKILLS_LIST } from '@/app/types/sheet';
+import { useCharacterStats } from '@/app/context/CharacterStatsContext';
 
 interface SkillsSectionProps {
 	skills: SkillData[];
@@ -27,26 +29,53 @@ export default function SkillsSection({
 	onAddSpecialisation,
 	onRemoveSpecialisation,
 }: SkillsSectionProps) {
-	// Calculate TOTAL for skill: manualInput + (advances × 5)
-	const calculateSkillTotal = (manualInput: string, advances: string): string => {
-		const manual = parseInt(manualInput) || 0;
-		const adv = parseInt(advances) || 0;
-		return (manual + adv * 5).toString();
+	const { characteristics } = useCharacterStats();
+
+	const characteristicKeyByLabel: Record<string, keyof typeof characteristics> = {
+		WS: 'ws',
+		BS: 'bs',
+		STR: 'str',
+		TGH: 'tgh',
+		AG: 'ag',
+		INT: 'int',
+		PER: 'per',
+		WIL: 'wil',
+		FEL: 'fel',
 	};
 
-	const handleManualInputChange = (index: number, value: string) => {
-		const skill = skills[index];
-		const total = calculateSkillTotal(value, skill.advances);
-		onSkillChange(index, 'manualInput', value);
-		onSkillChange(index, 'total', total);
+	const getSkillBaseCurrent = (skill: SkillData): string => {
+		const label = (skill.characteristic || '').toUpperCase().trim();
+		const key = characteristicKeyByLabel[label];
+		if (!key) return '0';
+		return characteristics[key]?.current ?? '0';
+	};
+
+	// Calculate TOTAL for skill: characteristicCurrent + (advances × 5)
+	const calculateSkillTotal = (characteristicCurrent: string, advances: string): string => {
+		const base = parseInt(characteristicCurrent) || 0;
+		const adv = parseInt(advances) || 0;
+		return (base + adv * 5).toString();
 	};
 
 	const handleAdvChange = (index: number, value: string) => {
 		const skill = skills[index];
-		const total = calculateSkillTotal(skill.manualInput, value);
+		const baseCurrent = getSkillBaseCurrent(skill);
+		const total = calculateSkillTotal(baseCurrent, value);
 		onSkillChange(index, 'advances', value);
 		onSkillChange(index, 'total', total);
 	};
+
+	// Keep stored totals in sync when characteristics change (export/import stays consistent)
+	useEffect(() => {
+		skills.forEach((skill, index) => {
+			const baseCurrent = getSkillBaseCurrent(skill);
+			const computedTotal = calculateSkillTotal(baseCurrent, skill.advances);
+			if ((skill.total || '') !== computedTotal) {
+				onSkillChange(index, 'total', computedTotal);
+			}
+		});
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [characteristics]);
 
 	// Calculate TOTAL for specialisation: adv × 5 (base from characteristic, but user manages total)
 	const calculateSpecialisationTotal = (adv: string): string => {
@@ -172,9 +201,8 @@ export default function SkillsSection({
 										<td style={{ padding: '8px', textAlign: 'center' }}>
 											<input
 												type='text'
-												value={skill.manualInput || ''}
-												onChange={(e) => handleManualInputChange(index, e.target.value)}
-												placeholder='0'
+												value={getSkillBaseCurrent(skill)}
+												readOnly
 												style={{ width: '60px', textAlign: 'center' }}
 												className='text-input'
 											/>
@@ -192,7 +220,7 @@ export default function SkillsSection({
 										<td style={{ padding: '8px', textAlign: 'center' }}>
 											<input
 												type='text'
-												value={skill.total}
+												value={calculateSkillTotal(getSkillBaseCurrent(skill), skill.advances)}
 												readOnly
 												style={{
 													width: '60px',

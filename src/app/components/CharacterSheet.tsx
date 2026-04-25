@@ -24,6 +24,7 @@ import GoalsInfluenceSection from './GoalsInfluence';
 import ActionButtons from './ActionButtons';
 
 import { SpecialisationData } from './SkillsSection';
+import { CharacterStatsProvider } from '@/app/context/CharacterStatsContext';
 
 const defaultSpecialisationsData: SpecialisationData[] = [];
 
@@ -214,23 +215,25 @@ export default function CharacterSheet() {
 						<p className='italic text-amber-700 text-sm mt-1'>⚔️ CHARACTER SHEET ⚔️</p>
 					</div>
 
-					<BasicInfoSection
-						basic={basic}
-						characteristics={characteristics}
-						onBasicChange={handleBasicChange}
-						onCharacteristicChange={handleCharacteristicChange}
-					/>
+					<CharacterStatsProvider characteristics={characteristics}>
+						<BasicInfoSection
+							basic={basic}
+							characteristics={characteristics}
+							onBasicChange={handleBasicChange}
+							onCharacteristicChange={handleCharacteristicChange}
+						/>
 
-					<FateCorruptionSection data={fateCorruption} onChange={handleFateCorruptionChange} />
-					<SkillsSection
-						skills={skills}
-						specialisations={specialisations}
-						onSkillChange={handleSkillChange}
-						onSpecialisationChange={handleSpecialisationChange}
-						onAddSpecialisation={handleAddSpecialisation}
-						onRemoveSpecialisation={handleRemoveSpecialisation}
-					/>
-					<GoalsInfluenceSection data={goalsInfluence} onChange={handleGoalsInfluenceChange} />
+						<FateCorruptionSection data={fateCorruption} onChange={handleFateCorruptionChange} />
+						<SkillsSection
+							skills={skills}
+							specialisations={specialisations}
+							onSkillChange={handleSkillChange}
+							onSpecialisationChange={handleSpecialisationChange}
+							onAddSpecialisation={handleAddSpecialisation}
+							onRemoveSpecialisation={handleRemoveSpecialisation}
+						/>
+						<GoalsInfluenceSection data={goalsInfluence} onChange={handleGoalsInfluenceChange} />
+					</CharacterStatsProvider>
 
 					<ActionButtons onExport={exportToJSON} onImport={importFromJSON} onReset={resetAll} />
 
