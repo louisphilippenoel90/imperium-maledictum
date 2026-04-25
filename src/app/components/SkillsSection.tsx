@@ -77,17 +77,47 @@ export default function SkillsSection({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [characteristics]);
 
-	// Calculate TOTAL for specialisation: adv × 5 (base from characteristic, but user manages total)
-	const calculateSpecialisationTotal = (adv: string): string => {
+	const getSpecialisationBaseFromSkill = (skillName: string): string => {
+		if (!skillName) return '0';
+		const target = skills.find((s) => (s.skillName || '').toUpperCase() === skillName.toUpperCase());
+		if (!target) return '0';
+		const baseCurrent = getSkillBaseCurrent(target);
+		return calculateSkillTotal(baseCurrent, target.advances);
+	};
+
+	// Calculate TOTAL for specialisation: base(skill total) + (adv × 5)
+	const calculateSpecialisationTotal = (base: string, adv: string): string => {
+		const baseValue = parseInt(base) || 0;
 		const advValue = parseInt(adv) || 0;
-		return (advValue * 5).toString();
+		return (baseValue + advValue * 5).toString();
 	};
 
 	const handleSpecialisationAdvChange = (index: number, value: string) => {
-		const total = calculateSpecialisationTotal(value);
+		const spec = specialisations[index];
+		const base = getSpecialisationBaseFromSkill(spec.skill);
+		const total = calculateSpecialisationTotal(base, value);
 		onSpecialisationChange(index, 'adv', value);
 		onSpecialisationChange(index, 'total', total);
 	};
+
+	const handleSpecialisationSkillChange = (index: number, value: string) => {
+		onSpecialisationChange(index, 'skill', value);
+		const base = getSpecialisationBaseFromSkill(value);
+		const total = calculateSpecialisationTotal(base, specialisations[index]?.adv || '');
+		onSpecialisationChange(index, 'total', total);
+	};
+
+	// Keep specialisation totals in sync if skill totals change
+	useEffect(() => {
+		specialisations.forEach((spec, index) => {
+			const base = getSpecialisationBaseFromSkill(spec.skill);
+			const computedTotal = calculateSpecialisationTotal(base, spec.adv);
+			if ((spec.total || '') !== computedTotal) {
+				onSpecialisationChange(index, 'total', computedTotal);
+			}
+		});
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [skills, characteristics]);
 
 	// Split skills into two tables (keep original indices for handlers)
 	const findSkillIndex = (name: string) =>
@@ -290,8 +320,18 @@ export default function SkillsSection({
 											textAlign: 'center',
 										}}
 									>
+										Base
+									</th>
+									<th
+										style={{
+											padding: '10px',
+											borderBottom: '2px solid #b58b4b',
+											textAlign: 'center',
+										}}
+									>
 										ADV. (+5 each)
 									</th>
+							
 									<th
 										style={{
 											padding: '10px',
@@ -328,7 +368,7 @@ export default function SkillsSection({
 										<td style={{ padding: '8px' }}>
 											<select
 												value={spec.skill}
-												onChange={(e) => onSpecialisationChange(idx, 'skill', e.target.value)}
+												onChange={(e) => handleSpecialisationSkillChange(idx, e.target.value)}
 												style={{ width: '150px' }}
 												className='text-input'
 											>
@@ -339,6 +379,21 @@ export default function SkillsSection({
 													</option>
 												))}
 											</select>
+										</td>
+										
+										<td style={{ padding: '8px', textAlign: 'center' }}>
+											<input
+												type='text'
+												value={getSpecialisationBaseFromSkill(spec.skill)}
+												readOnly
+												style={{
+													width: '80px',
+													textAlign: 'center',
+													backgroundColor: '#fff7e6',
+													fontWeight: 'bold',
+												}}
+												className='text-input'
+											/>
 										</td>
 										<td style={{ padding: '8px', textAlign: 'center' }}>
 											<input
@@ -353,7 +408,10 @@ export default function SkillsSection({
 										<td style={{ padding: '8px', textAlign: 'center' }}>
 											<input
 												type='text'
-												value={spec.total}
+												value={calculateSpecialisationTotal(
+													getSpecialisationBaseFromSkill(spec.skill),
+													spec.adv,
+												)}
 												readOnly
 												style={{
 													width: '80px',

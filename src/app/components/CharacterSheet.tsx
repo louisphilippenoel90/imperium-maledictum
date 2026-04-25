@@ -25,10 +25,11 @@ import ActionButtons from './ActionButtons';
 
 import { SpecialisationData } from './SkillsSection';
 import { CharacterStatsProvider } from '@/app/context/CharacterStatsContext';
+import { ExportJsonProvider, useExportJson } from '@/app/context/ExportJsonContext';
 
 const defaultSpecialisationsData: SpecialisationData[] = [];
 
-export default function CharacterSheet() {
+function CharacterSheetInner() {
 	const [basic, setBasic] = useState<BasicInfo>(defaultBasicInfo);
 	const [characteristics, setCharacteristics] = useState<Characteristics>(defaultCharacteristics);
 	const [fateCorruption, setFateCorruption] = useState<FateCorruption>(defaultFateCorruption);
@@ -104,6 +105,8 @@ export default function CharacterSheet() {
 		);
 	};
 
+	const { dispatchExport } = useExportJson();
+
 	const exportToJSON = () => {
 		const fullData: CharacterSheetData = {
 			basic,
@@ -119,6 +122,10 @@ export default function CharacterSheet() {
 			...fullData,
 		};
 		const jsonStr = JSON.stringify(exportObj, null, 2);
+
+		// Dispatch exported content to the app (Context API)
+		dispatchExport({ exportObject: exportObj, exportJson: jsonStr });
+
 		const blob = new Blob([jsonStr], { type: 'application/json' });
 		const url = URL.createObjectURL(blob);
 		const a = document.createElement('a');
@@ -245,5 +252,13 @@ export default function CharacterSheet() {
 				</div>
 			</div>
 		</div>
+	);
+}
+
+export default function CharacterSheet() {
+	return (
+		<ExportJsonProvider>
+			<CharacterSheetInner />
+		</ExportJsonProvider>
 	);
 }
