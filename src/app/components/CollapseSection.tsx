@@ -4,7 +4,7 @@ import { useId, useState } from 'react';
 
 export default function CollapseSection({
 	title,
-	defaultOpen = true,
+	defaultOpen = false,
 	children,
 }: {
 	title: string;
@@ -54,4 +54,3 @@ export default function CollapseSection({
 		</div>
 	);
 }
-

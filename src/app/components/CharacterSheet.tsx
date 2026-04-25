@@ -96,8 +96,8 @@ function CharacterSheetInner() {
 		setFateCorruption((prev) => ({ ...prev, [field]: value }));
 	};
 
-	const handleGoalsInfluenceChange = (field: keyof GoalsInfluence, value: string) => {
-		setGoalsInfluence((prev) => ({ ...prev, [field]: value }));
+	const handleGoalsInfluenceReplace = (next: GoalsInfluence) => {
+		setGoalsInfluence(next);
 	};
 
 	const handleSkillChange = (index: number, field: keyof SkillData, value: string) => {
@@ -158,7 +158,30 @@ function CharacterSheetInner() {
 					}));
 					setSkills(mergedSkills);
 				}
-				if (parsed.goalsInfluence) setGoalsInfluence(parsed.goalsInfluence);
+				if (parsed.goalsInfluence) {
+					// Backward compatible migration (older exports had { goals, factionInfluence, contacts })
+					const gi = parsed.goalsInfluence;
+					const migrated: GoalsInfluence = {
+						...defaultGoalsInfluence,
+						...gi,
+						connections: gi.connections ?? gi.contacts ?? '',
+						influences:
+							Array.isArray(gi.influences) && gi.influences.length > 0
+								? gi.influences
+								: gi.factionInfluence || gi.contacts
+									? [
+											{
+												id: Date.now().toString(),
+												faction: gi.factionInfluence ?? '',
+												influence: '',
+												contacts: gi.contacts ?? '',
+											},
+										]
+									: [],
+						talents: Array.isArray(gi.talents) ? gi.talents : [],
+					};
+					setGoalsInfluence(migrated);
+				}
 				if (parsed.specialisations && Array.isArray(parsed.specialisations)) {
 					setSpecialisations(parsed.specialisations);
 				}
@@ -224,7 +247,7 @@ function CharacterSheetInner() {
 					</div>
 
 					<CharacterStatsProvider characteristics={characteristics}>
-						<CollapseSection title='📜 ORIGIN & IDENTITY' defaultOpen>
+						<CollapseSection title='📜 ORIGIN & IDENTITY' defaultOpen={false}>
 							<BasicInfoSection
 								showTitle={false}
 								basic={basic}
@@ -242,7 +265,7 @@ function CharacterSheetInner() {
 							/>
 						</CollapseSection>
 
-						<CollapseSection title='⚙️ SKILLS & SPECIALISATIONS' defaultOpen>
+						<CollapseSection title='⚙️ SKILLS & SPECIALISATIONS' defaultOpen={false}>
 							<SkillsSection
 								showTitle={false}
 								skills={skills}
@@ -258,7 +281,7 @@ function CharacterSheetInner() {
 							<GoalsInfluenceSection
 								showTitle={false}
 								data={goalsInfluence}
-								onChange={handleGoalsInfluenceChange}
+								onChange={handleGoalsInfluenceReplace}
 							/>
 						</CollapseSection>
 					</CharacterStatsProvider>

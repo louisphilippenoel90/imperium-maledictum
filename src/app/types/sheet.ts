@@ -58,10 +58,28 @@ export interface SpecialisationData {
 	total: string;
 }
 
+export interface InfluenceRow {
+	id: string;
+	faction: string;
+	influence: string;
+	contacts: string;
+}
+
+export interface TalentRow {
+	id: string;
+	name: string;
+	effects: string;
+}
+
 export interface GoalsInfluence {
 	goals: string;
-	factionInfluence: string;
-	contacts: string;
+	connections: string;
+	notes: string;
+	divination: string;
+	solars: string;
+	otherCurrencies: string;
+	influences: InfluenceRow[];
+	talents: TalentRow[];
 }
 
 export interface CharacterSheetData {
@@ -135,8 +153,13 @@ export const defaultFateCorruption: FateCorruption = {
 
 export const defaultGoalsInfluence: GoalsInfluence = {
 	goals: '',
-	factionInfluence: '',
-	contacts: '',
+	connections: '',
+	notes: '',
+	divination: '',
+	solars: '',
+	otherCurrencies: '',
+	influences: [],
+	talents: [],
 };
 
 export const defaultSkillsData: SkillData[] = SKILLS_LIST.map((skill) => ({
