@@ -1,26 +1,430 @@
-@import "tailwindcss";
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Reset & Base Styles */
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+	background: linear-gradient(135deg, #1c1610 0%, #0f0c08 100%);
+	font-family: 'Segoe UI', 'Roboto', 'Georgia', 'Times New Roman', serif;
+	min-height: 100vh;
+	padding: 32px 20px;
+}
+
+/* Sheet Container */
+.sheet-container {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 24px;
+}
+
+/* Main Card */
+.sheet-card {
+	background: linear-gradient(145deg, #fef7e6 0%, #faf0dc 100%);
+	border-radius: 28px;
+	box-shadow:
+		0 20px 40px rgba(0, 0, 0, 0.5),
+		inset 0 1px 0 rgba(255, 248, 225, 0.5);
+	border: 1px solid #cfb87c;
+	overflow: hidden;
+}
+
+.sheet-card > div {
+	padding: 28px 32px;
+}
+
+/* Header */
+.text-center {
+	text-align: center;
+	margin-bottom: 28px;
+}
+
+h1 {
+	font-family: 'Georgia', 'Times New Roman', serif;
+	font-size: 2.2rem;
+	letter-spacing: 6px;
+	color: #3a2a1c;
+	border-bottom: 3px double #b58b4b;
+	display: inline-block;
+	padding-bottom: 8px;
+	margin-bottom: 6px;
+}
+
+.italic {
+	font-style: italic;
+}
+
+.text-amber-700 {
+	color: #a06934;
+	font-size: 0.85rem;
+	margin-top: 6px;
+}
+
+/* Form Sections */
+.form-section {
+	background: rgba(250, 242, 222, 0.4);
+	border-radius: 20px;
+	padding: 20px 24px;
+	margin-bottom: 28px;
+	border: 1px solid #e2d0ae;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.section-title {
+	font-size: 1.4rem;
+	font-weight: bold;
+	font-family: 'Georgia', serif;
+	color: #4f351e;
+	border-left: 8px solid #b87c3a;
+	padding-left: 16px;
+	margin-bottom: 20px;
+	margin-top: 0;
+}
+
+/* Grid Layouts */
+.grid-2cols {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+	gap: 16px 24px;
+}
+
+.mt-4 {
+	margin-top: 16px;
+}
+
+/* Field Groups */
+.field-group {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.field-label {
+	font-weight: 700;
+	font-size: 0.75rem;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	color: #5a3f28;
+}
+
+/* Input Styles */
+.text-input {
+	background: #fffdf7;
+	border: 1px solid #cdb28b;
+	border-radius: 12px;
+	padding: 10px 14px;
+	font-family: 'Courier New', 'Menlo', monospace;
+	font-size: 0.85rem;
+	color: #1f1a12;
+	transition: all 0.2s ease;
+	width: 100%;
+}
+
+.text-input:focus {
+	outline: none;
+	border-color: #9b6e3c;
+	box-shadow: 0 0 0 2px rgba(155, 110, 60, 0.2);
+	background: #ffffff;
+}
+
+.textarea-input {
+	background: #fffdf7;
+	border: 1px solid #cdb28b;
+	border-radius: 12px;
+	padding: 10px 14px;
+	font-family: 'Courier New', 'Menlo', monospace;
+	font-size: 0.85rem;
+	color: #1f1a12;
+	transition: all 0.2s ease;
+	width: 100%;
+	resize: vertical;
+	min-height: 70px;
+}
+
+.textarea-input:focus {
+	outline: none;
+	border-color: #9b6e3c;
+	box-shadow: 0 0 0 2px rgba(155, 110, 60, 0.2);
+	background: #ffffff;
+}
+
+/* Skills Section */
+.skills-container {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.skill-row {
+	background: #fff9ef;
+	border-radius: 14px;
+	padding: 12px 16px;
+	border: 1px solid #e2cfaa;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 12px;
+}
+
+.skill-name {
+	font-weight: 800;
+	min-width: 110px;
+	font-size: 0.8rem;
+	color: #5a3b20;
+	text-transform: uppercase;
+	letter-spacing: 0.3px;
+}
+
+.skill-stat {
+	font-size: 0.7rem;
+	background: #e9dfcb;
+	padding: 4px 10px;
+	border-radius: 30px;
+	color: #4f321a;
+	font-weight: 600;
+	font-family: monospace;
+}
+
+.skill-inputs {
+	display: flex;
+	flex: 1;
+	gap: 10px;
+	flex-wrap: wrap;
+}
+
+.skill-input {
+	flex: 1;
+	min-width: 70px;
+	background: white;
+	border: 1px solid #cfb886;
+	border-radius: 30px;
+	padding: 8px 12px;
+	font-family: 'Courier New', monospace;
+	font-size: 0.8rem;
+	transition: all 0.2s ease;
+}
+
+.skill-input:focus {
+	outline: none;
+	border-color: #9b6e3c;
+	box-shadow: 0 0 0 2px rgba(155, 110, 60, 0.2);
+}
+
+.skill-specialisation {
+	flex: 2;
+	min-width: 120px;
+	background: white;
+	border: 1px solid #cfb886;
+	border-radius: 30px;
+	padding: 8px 12px;
+	font-family: 'Courier New', monospace;
+	font-size: 0.8rem;
+}
+
+.skill-specialisation:focus {
+	outline: none;
+	border-color: #9b6e3c;
+	box-shadow: 0 0 0 2px rgba(155, 110, 60, 0.2);
+}
+
+.skills-note {
+	font-size: 0.7rem;
+	color: #846b44;
+	margin-top: 12px;
+	font-style: italic;
+}
+
+/* Buttons */
+.button-bar {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 16px;
+	justify-content: center;
+	margin-top: 32px;
+	margin-bottom: 16px;
+}
+
+.btn-primary {
+	background: #5c3f28;
+	border: none;
+	padding: 12px 28px;
+	font-weight: bold;
+	font-size: 0.85rem;
+	border-radius: 48px;
+	color: #fef0df;
+	cursor: pointer;
+	transition: all 0.2s;
+	font-family: monospace;
+	letter-spacing: 1px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.btn-primary:hover {
+	background: #795a3b;
+	transform: scale(0.97);
+}
+
+.btn-secondary {
+	background: #5f5a52;
+	border: none;
+	padding: 12px 28px;
+	font-weight: bold;
+	font-size: 0.85rem;
+	border-radius: 48px;
+	color: #fef0df;
+	cursor: pointer;
+	transition: all 0.2s;
+	font-family: monospace;
+	letter-spacing: 1px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.btn-secondary:hover {
+	background: #767067;
+	transform: scale(0.97);
+}
+
+/* Status Message */
+.status-message {
+	text-align: center;
+	margin-top: 16px;
+	padding: 8px 16px;
+	border-radius: 40px;
+	background: #e7ddca;
+	color: #4d3a28;
+	font-size: 0.8rem;
+}
+
+/* Footer */
+footer {
+	text-align: center;
+	font-size: 0.7rem;
+	margin-top: 24px;
+	padding-top: 16px;
+	border-top: 1px solid #ddcca8;
+	color: #8f764f;
+}
+
+/* Utility Classes */
+.w-full {
+	width: 100%;
+}
+
+.space-y-3 > * + * {
+	margin-top: 12px;
+}
+
+.mb-4 {
+	margin-bottom: 16px;
+}
+
+.mt-3 {
+	margin-top: 12px;
+}
+
+.mt-4 {
+	margin-top: 16px;
+}
+
+.mt-6 {
+	margin-top: 24px;
+}
+
+.pt-4 {
+	padding-top: 16px;
+}
+
+.cursor-pointer {
+	cursor: pointer;
+}
+
+.hidden {
+	display: none;
+}
+
+/* File input label styling */
+.file-label {
+	background: #5c3f28;
+	border: none;
+	padding: 12px 28px;
+	font-weight: bold;
+	font-size: 0.85rem;
+	border-radius: 48px;
+	color: #fef0df;
+	cursor: pointer;
+	transition: all 0.2s;
+	font-family: monospace;
+	letter-spacing: 1px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+	display: inline-block;
+}
+
+.file-label:hover {
+	background: #795a3b;
+	transform: scale(0.97);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+	body {
+		padding: 16px 12px;
+	}
+
+	.sheet-card > div {
+		padding: 20px 16px;
+	}
+
+	h1 {
+		font-size: 1.6rem;
+		letter-spacing: 3px;
+	}
+
+	.section-title {
+		font-size: 1.2rem;
+	}
+
+	.form-section {
+		padding: 16px;
+	}
+
+	.skill-row {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.skill-name {
+		min-width: auto;
+	}
+
+	.skill-inputs {
+		flex-direction: column;
+	}
+
+	.skill-input,
+	.skill-specialisation {
+		width: 100%;
+	}
+
+	.button-bar {
+		gap: 12px;
+	}
+
+	.btn-primary,
+	.btn-secondary,
+	.file-label {
+		padding: 10px 20px;
+		font-size: 0.75rem;
+	}
+}
+
+@media (max-width: 480px) {
+	.grid-2cols {
+		grid-template-columns: 1fr;
+	}
+
+	h1 {
+		font-size: 1.3rem;
+		letter-spacing: 2px;
+	}
 }
