@@ -33,21 +33,24 @@ import BasicInfoSection from './page1/BasicInfo';
 import FateCorruptionSection from './page1/FateCorruption';
 import SkillsSection from './page1/SkillsSection';
 import GoalsInfluenceSection from './page1/GoalsInfluence';
-import ActionButtons from './ActionButtons';
-
 import { SpecialisationData } from './page1/SkillsSection';
-import { CharacterStatsProvider } from '@/app/context/CharacterStatsContext';
-import { ExportJsonProvider, useExportJson } from '@/app/context/ExportJsonContext';
-import CollapseSection from './CollapseSection';
+
 import WoundsSection from './page2/WoundsSection';
 import WeaponsSection from './page2/WeaponsSection';
 import ArmourSection from './page2/ArmourSection';
 import EquipmentSection from './page2/EquipmentSection';
 import PsychicPowersSection from './page2/PsychicPowersSection';
+
 import InfosSection from './page3/InfosSection';
 import BoonsSection from './page3/BoonsSection';
 import InfluenceSection from './page3/InfluenceSection';
 import NotesSection from './page3/NotesSection';
+
+import CollapseSection from './CollapseSection';
+import ActionButtons from './ActionButtons';
+
+import { CharacterStatsProvider } from '@/app/context/CharacterStatsContext';
+import { ExportJsonProvider, useExportJson } from '@/app/context/ExportJsonContext';
 
 const defaultSpecialisationsData: SpecialisationData[] = [];
 
@@ -492,7 +495,14 @@ function CharacterSheetInner() {
 						) : null}
 					</CharacterStatsProvider>
 
-					<div style={{ display: 'flex', justifyContent: 'space-between', gap: '12px', marginTop: '12px' }}>
+					<div
+						style={{
+							display: 'flex',
+							justifyContent: 'space-between',
+							gap: '12px',
+							marginTop: '12px',
+						}}
+					>
 						<button
 							type='button'
 							onClick={() => setPage((p) => (p > 1 ? ((p - 1) as 1 | 2 | 3) : p))}

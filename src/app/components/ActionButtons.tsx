@@ -16,10 +16,10 @@ export default function ActionButtons({ onExport, onImport, onReset }: ActionBut
 	return (
 		<div className='button-bar'>
 			<button onClick={onExport} className='btn-primary'>
-				📎 EXPORT AS JSON
+				📎 EXPORT
 			</button>
 			<label className='file-label'>
-				📂 IMPORT FROM JSON
+				📂 IMPORT
 				<input type='file' accept='.json' onChange={handleFileUpload} className='hidden' />
 			</label>
 			<button onClick={onReset} className='btn-secondary'>
