@@ -29,7 +29,16 @@ export default function PsychicPowersSection({
 			...data,
 			powers: [
 				...data.powers,
-				{ id: Date.now().toString(), name: '', wr: '', dif: '', ran: '', tar: '', dur: '', effect: '' },
+				{
+					id: Date.now().toString(),
+					name: '',
+					wrp: '',
+					diff: '',
+					rang: '',
+					targ: '',
+					dur: '',
+					effect: '',
+				},
 			],
 		});
 	};
@@ -46,7 +55,14 @@ export default function PsychicPowersSection({
 		<div>
 			{showTitle ? <h2 className='section-title'>🧠 PSYCHIC POWERS</h2> : null}
 
-			<div style={{ display: 'flex', justifyContent: 'space-between', gap: '10px', marginBottom: '10px' }}>
+			<div
+				style={{
+					display: 'flex',
+					justifyContent: 'space-between',
+					gap: '10px',
+					marginBottom: '10px',
+				}}
+			>
 				<div style={{ color: '#846b44', fontSize: '0.8rem', fontStyle: 'italic' }}>
 					Effect is a textarea; all other fields are inputs.
 				</div>
@@ -72,14 +88,40 @@ export default function PsychicPowersSection({
 				<table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '1080px' }}>
 					<thead>
 						<tr style={{ backgroundColor: '#e9dfcb' }}>
-							<th style={{ padding: '10px', borderBottom: '2px solid #b58b4b', textAlign: 'left' }}>NAME</th>
-							<th style={{ padding: '10px', borderBottom: '2px solid #b58b4b', textAlign: 'center' }}>WR</th>
-							<th style={{ padding: '10px', borderBottom: '2px solid #b58b4b', textAlign: 'center' }}>DIF</th>
-							<th style={{ padding: '10px', borderBottom: '2px solid #b58b4b', textAlign: 'center' }}>RAN</th>
-							<th style={{ padding: '10px', borderBottom: '2px solid #b58b4b', textAlign: 'center' }}>TAR</th>
-							<th style={{ padding: '10px', borderBottom: '2px solid #b58b4b', textAlign: 'center' }}>DUR</th>
-							<th style={{ padding: '10px', borderBottom: '2px solid #b58b4b', textAlign: 'left' }}>EFFECT</th>
-							<th style={{ padding: '10px', borderBottom: '2px solid #b58b4b', textAlign: 'center' }} />
+							<th style={{ padding: '10px', borderBottom: '2px solid #b58b4b', textAlign: 'left' }}>
+								NAME
+							</th>
+							<th
+								style={{ padding: '10px', borderBottom: '2px solid #b58b4b', textAlign: 'center' }}
+							>
+								WR
+							</th>
+							<th
+								style={{ padding: '10px', borderBottom: '2px solid #b58b4b', textAlign: 'center' }}
+							>
+								DIF
+							</th>
+							<th
+								style={{ padding: '10px', borderBottom: '2px solid #b58b4b', textAlign: 'center' }}
+							>
+								RAN
+							</th>
+							<th
+								style={{ padding: '10px', borderBottom: '2px solid #b58b4b', textAlign: 'center' }}
+							>
+								TAR
+							</th>
+							<th
+								style={{ padding: '10px', borderBottom: '2px solid #b58b4b', textAlign: 'center' }}
+							>
+								DUR
+							</th>
+							<th style={{ padding: '10px', borderBottom: '2px solid #b58b4b', textAlign: 'left' }}>
+								EFFECT
+							</th>
+							<th
+								style={{ padding: '10px', borderBottom: '2px solid #b58b4b', textAlign: 'center' }}
+							/>
 						</tr>
 					</thead>
 					<tbody>
@@ -104,8 +146,8 @@ export default function PsychicPowersSection({
 									<td style={{ padding: '8px', textAlign: 'center', width: '70px' }}>
 										<input
 											type='text'
-											value={p.wr}
-											onChange={(e) => updatePower(p.id, { wr: e.target.value })}
+											value={p.wrp}
+											onChange={(e) => updatePower(p.id, { wrp: e.target.value })}
 											placeholder='-'
 											className='text-input'
 											style={{ width: '60px', textAlign: 'center' }}
@@ -114,8 +156,8 @@ export default function PsychicPowersSection({
 									<td style={{ padding: '8px', textAlign: 'center', width: '80px' }}>
 										<input
 											type='text'
-											value={p.dif}
-											onChange={(e) => updatePower(p.id, { dif: e.target.value })}
+											value={p.diff}
+											onChange={(e) => updatePower(p.id, { diff: e.target.value })}
 											placeholder='-'
 											className='text-input'
 											style={{ width: '70px', textAlign: 'center' }}
@@ -124,8 +166,8 @@ export default function PsychicPowersSection({
 									<td style={{ padding: '8px', textAlign: 'center', width: '80px' }}>
 										<input
 											type='text'
-											value={p.ran}
-											onChange={(e) => updatePower(p.id, { ran: e.target.value })}
+											value={p.rang}
+											onChange={(e) => updatePower(p.id, { rang: e.target.value })}
 											placeholder='-'
 											className='text-input'
 											style={{ width: '70px', textAlign: 'center' }}
@@ -134,8 +176,8 @@ export default function PsychicPowersSection({
 									<td style={{ padding: '8px', textAlign: 'center', width: '80px' }}>
 										<input
 											type='text'
-											value={p.tar}
-											onChange={(e) => updatePower(p.id, { tar: e.target.value })}
+											value={p.targ}
+											onChange={(e) => updatePower(p.id, { targ: e.target.value })}
 											placeholder='-'
 											className='text-input'
 											style={{ width: '70px', textAlign: 'center' }}
@@ -194,11 +236,26 @@ export default function PsychicPowersSection({
 						minWidth: '280px',
 					}}
 				>
-					<div style={{ display: 'flex', justifyContent: 'space-between', gap: '10px', alignItems: 'center' }}>
+					<div
+						style={{
+							display: 'flex',
+							justifyContent: 'space-between',
+							gap: '10px',
+							alignItems: 'center',
+						}}
+					>
 						<h3 style={{ fontSize: '1.05rem', fontWeight: 'bold', color: '#4f351e', margin: 0 }}>
 							WARP CHARGE
 						</h3>
-						<label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: '#4f351e' }}>
+						<label
+							style={{
+								display: 'flex',
+								alignItems: 'center',
+								gap: '8px',
+								fontSize: '0.8rem',
+								color: '#4f351e',
+							}}
+						>
 							<input
 								type='checkbox'
 								checked={data.sanctioned}
@@ -240,4 +297,3 @@ export default function PsychicPowersSection({
 		</div>
 	);
 }
-

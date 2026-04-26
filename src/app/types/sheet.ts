@@ -148,10 +148,10 @@ export interface EquipmentData {
 export interface PsychicPowerRow {
 	id: string;
 	name: string;
-	wr: string;
-	dif: string;
-	ran: string;
-	tar: string;
+	wrp: string;
+	diff: string;
+	rang: string;
+	targ: string;
 	dur: string;
 	effect: string;
 }
