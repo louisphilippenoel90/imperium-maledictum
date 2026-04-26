@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo } from 'react';
 import { ArmourData, HitLocationKey } from '@/app/types/sheet';
 
 interface ArmourSectionProps {
@@ -17,6 +18,8 @@ const HIT_ROWS: { d10: string; label: string; key: HitLocationKey }[] = [
 	{ d10: '6-0', label: 'Body', key: 'body' },
 ];
 
+const HIT_LABELS: { key: HitLocationKey; label: string }[] = HIT_ROWS.map(({ key, label }) => ({ key, label }));
+
 export default function ArmourSection({ data, onChange, showTitle = true }: ArmourSectionProps) {
 	const addArmour = () => {
 		onChange({
@@ -26,7 +29,7 @@ export default function ArmourSection({ data, onChange, showTitle = true }: Armo
 				{
 					id: Date.now().toString(),
 					name: '',
-					location: '',
+					locations: [],
 					armourValue: '',
 					enc: '',
 					traits: '',
@@ -46,9 +49,25 @@ export default function ArmourSection({ data, onChange, showTitle = true }: Armo
 		});
 	};
 
-	const updateHit = (key: HitLocationKey, value: string) => {
-		onChange({ ...data, hitLocations: { ...data.hitLocations, [key]: value } });
-	};
+	const hitArmourByLocation = useMemo(() => {
+		const result: Record<HitLocationKey, number> = {
+			head: 0,
+			leftArm: 0,
+			rightArm: 0,
+			leftLeg: 0,
+			rightLeg: 0,
+			body: 0,
+		};
+
+		for (const armour of data.armours) {
+			const value = parseInt(armour.armourValue) || 0;
+			for (const loc of armour.locations || []) {
+				result[loc] += value;
+			}
+		}
+
+		return result;
+	}, [data.armours]);
 
 	return (
 		<div>
@@ -121,13 +140,29 @@ export default function ArmourSection({ data, onChange, showTitle = true }: Armo
 												/>
 											</td>
 											<td style={{ padding: '8px', width: '180px' }}>
-												<input
-													type='text'
-													value={a.location}
-													onChange={(e) => updateArmour(a.id, { location: e.target.value })}
-													placeholder='e.g., Body, Arms'
-													className='text-input'
-												/>
+										<div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+											{HIT_LABELS.map((opt) => {
+												const checked = a.locations?.includes(opt.key) ?? false;
+												return (
+													<label
+														key={opt.key}
+														style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem' }}
+													>
+														<input
+															type='checkbox'
+															checked={checked}
+															onChange={(e) => {
+																const next = e.target.checked
+																	? [...(a.locations || []), opt.key]
+																	: (a.locations || []).filter((k) => k !== opt.key);
+																updateArmour(a.id, { locations: next });
+															}}
+														/>
+														<span style={{ color: '#4f351e' }}>{opt.label}</span>
+													</label>
+												);
+											})}
+										</div>
 											</td>
 											<td style={{ padding: '8px', textAlign: 'center', width: '90px' }}>
 												<input
@@ -213,10 +248,14 @@ export default function ArmourSection({ data, onChange, showTitle = true }: Armo
 										<td style={{ padding: '8px', textAlign: 'center', width: '90px' }}>
 											<input
 												type='text'
-												value={data.hitLocations[row.key]}
-												onChange={(e) => updateHit(row.key, e.target.value)}
-												placeholder='0'
-												style={{ width: '70px', textAlign: 'center' }}
+												value={hitArmourByLocation[row.key]}
+												readOnly
+												style={{
+													width: '70px',
+													textAlign: 'center',
+													backgroundColor: '#e9dfcb',
+													fontWeight: 'bold',
+												}}
 												className='text-input'
 											/>
 										</td>

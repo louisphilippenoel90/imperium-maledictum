@@ -12,6 +12,7 @@ import {
 	WoundsData,
 	WeaponsData,
 	ArmourData,
+	EquipmentData,
 	defaultBasicInfo,
 	defaultCharacteristics,
 	defaultFateCorruption,
@@ -20,6 +21,7 @@ import {
 	defaultWoundsData,
 	defaultWeaponsData,
 	defaultArmourData,
+	defaultEquipmentData,
 	SKILLS_LIST,
 } from '@/app/types/sheet';
 import { saveToLocalStorage, loadFromLocalStorage, clearLocalStorage } from '@/app/utils/storage';
@@ -36,6 +38,7 @@ import CollapseSection from './CollapseSection';
 import WoundsSection from './page2/WoundsSection';
 import WeaponsSection from './page2/WeaponsSection';
 import ArmourSection from './page2/ArmourSection';
+import EquipmentSection from './page2/EquipmentSection';
 
 const defaultSpecialisationsData: SpecialisationData[] = [];
 
@@ -49,6 +52,7 @@ function CharacterSheetInner() {
 	const [wounds, setWounds] = useState<WoundsData>(defaultWoundsData);
 	const [weapons, setWeapons] = useState<WeaponsData>(defaultWeaponsData);
 	const [armour, setArmour] = useState<ArmourData>(defaultArmourData);
+	const [equipment, setEquipment] = useState<EquipmentData>(defaultEquipmentData);
 	const [status, setStatus] = useState('✅ Ready — fill fields, export/import JSON.');
 	const [specialisations, setSpecialisations] = useState<SpecialisationData[]>(
 		defaultSpecialisationsData,
@@ -70,6 +74,7 @@ function CharacterSheetInner() {
 			setWounds(saved.wounds || defaultWoundsData);
 			setWeapons(saved.weapons || defaultWeaponsData);
 			setArmour(saved.armour || defaultArmourData);
+			setEquipment(saved.equipment || defaultEquipmentData);
 			setSpecialisations(saved.specialisations || defaultSpecialisationsData);
 			setStatus('📀 Loaded previous session from browser storage.');
 			setTimeout(() => setStatus('✅ Ready — fill fields, export/import JSON.'), 3000);
@@ -87,14 +92,38 @@ function CharacterSheetInner() {
 			wounds,
 			weapons,
 			armour,
+			equipment,
 			specialisations,
 		};
 		saveToLocalStorage(fullData);
-	}, [basic, characteristics, fateCorruption, skills, goalsInfluence, wounds, weapons, armour, specialisations]);
+	}, [
+		basic,
+		characteristics,
+		fateCorruption,
+		skills,
+		goalsInfluence,
+		wounds,
+		weapons,
+		armour,
+		equipment,
+		specialisations,
+	]);
 
 	useEffect(() => {
 		autoSave();
-	}, [basic, characteristics, fateCorruption, skills, goalsInfluence, wounds, weapons, armour, specialisations, autoSave]);
+	}, [
+		basic,
+		characteristics,
+		fateCorruption,
+		skills,
+		goalsInfluence,
+		wounds,
+		weapons,
+		armour,
+		equipment,
+		specialisations,
+		autoSave,
+	]);
 
 	const handleBasicChange = (field: keyof BasicInfo, value: string) => {
 		setBasic((prev) => ({ ...prev, [field]: value }));
@@ -137,6 +166,7 @@ function CharacterSheetInner() {
 			wounds,
 			weapons,
 			armour,
+			equipment,
 			specialisations,
 		};
 		const exportObj = {
@@ -206,7 +236,30 @@ function CharacterSheetInner() {
 				}
 				if (parsed.wounds) setWounds(parsed.wounds);
 				if (parsed.weapons) setWeapons(parsed.weapons);
-				if (parsed.armour) setArmour(parsed.armour);
+				if (parsed.armour) {
+					const a = parsed.armour;
+					const migrated = {
+						...defaultArmourData,
+						...a,
+						armours: Array.isArray(a.armours)
+							? a.armours.map((row: any) => ({
+									id: String(row.id ?? Date.now()),
+									name: String(row.name ?? ''),
+									armourValue: String(row.armourValue ?? ''),
+									enc: String(row.enc ?? ''),
+									traits: String(row.traits ?? ''),
+									// migrate old single string "location" to multi locations
+									locations: Array.isArray(row.locations)
+										? row.locations
+										: typeof row.location === 'string' && row.location.trim()
+											? (['body'] as const)
+											: [],
+								}))
+							: defaultArmourData.armours,
+					};
+					setArmour(migrated);
+				}
+				if (parsed.equipment) setEquipment(parsed.equipment);
 				if (parsed.specialisations && Array.isArray(parsed.specialisations)) {
 					setSpecialisations(parsed.specialisations);
 				}
@@ -230,6 +283,7 @@ function CharacterSheetInner() {
 			setWounds(defaultWoundsData);
 			setWeapons(defaultWeaponsData);
 			setArmour(defaultArmourData);
+			setEquipment(defaultEquipmentData);
 			setSpecialisations(defaultSpecialisationsData);
 			clearLocalStorage();
 			setStatus('🧹 All fields cleared.');
@@ -365,6 +419,9 @@ function CharacterSheetInner() {
 								</CollapseSection>
 								<CollapseSection title='🛡️ ARMOUR' defaultOpen={false}>
 									<ArmourSection showTitle={false} data={armour} onChange={setArmour} />
+								</CollapseSection>
+								<CollapseSection title='🎒 EQUIPMENT' defaultOpen={false}>
+									<EquipmentSection showTitle={false} data={equipment} onChange={setEquipment} />
 								</CollapseSection>
 							</>
 						) : null}

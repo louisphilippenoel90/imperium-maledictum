@@ -114,7 +114,7 @@ export type HitLocationKey = 'head' | 'leftArm' | 'rightArm' | 'leftLeg' | 'righ
 export interface ArmourRow {
 	id: string;
 	name: string;
-	location: string;
+	locations: HitLocationKey[];
 	armourValue: string;
 	enc: string;
 	traits: string;
@@ -134,6 +134,17 @@ export interface ArmourData {
 	hitLocations: ArmourHitLocations;
 }
 
+export interface EquipmentRow {
+	id: string;
+	equipment: string;
+	combatNotes: string;
+}
+
+export interface EquipmentData {
+	items: EquipmentRow[];
+	encumbranceCurrent: string;
+}
+
 export interface CharacterSheetData {
 	basic: BasicInfo;
 	characteristics: Characteristics;
@@ -144,6 +155,7 @@ export interface CharacterSheetData {
 	wounds: WoundsData;
 	weapons: WeaponsData;
 	armour: ArmourData;
+	equipment: EquipmentData;
 }
 
 export const SKILLS_LIST = [
@@ -236,6 +248,11 @@ export const defaultArmourData: ArmourData = {
 		rightLeg: '',
 		body: '',
 	},
+};
+
+export const defaultEquipmentData: EquipmentData = {
+	items: [],
+	encumbranceCurrent: '',
 };
 
 export const defaultSkillsData: SkillData[] = SKILLS_LIST.map((skill) => ({
