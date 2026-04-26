@@ -81,7 +81,9 @@ export default function SkillsSection({
 
 	const getSpecialisationBaseFromSkill = (skillName: string): string => {
 		if (!skillName) return '0';
-		const target = skills.find((s) => (s.skillName || '').toUpperCase() === skillName.toUpperCase());
+		const target = skills.find(
+			(s) => (s.skillName || '').toUpperCase() === skillName.toUpperCase(),
+		);
 		if (!target) return '0';
 		const baseCurrent = getSkillBaseCurrent(target);
 		return calculateSkillTotal(baseCurrent, target.advances);
@@ -213,7 +215,13 @@ export default function SkillsSection({
 							</thead>
 							<tbody>
 								{data.map(({ skill, index }) => (
-									<tr key={`${keyPrefix}-${index}`} style={{ borderBottom: '1px solid #e2cfaa' }}>
+									<tr
+										key={`${keyPrefix}-${index}`}
+										style={{
+											borderBottom: '1px solid #e2cfaa',
+											backgroundColor: index % 2 === 0 ? '#e9dfcb' : '#f5efdf',
+										}}
+									>
 										<td style={{ padding: '8px', fontWeight: 'bold', overflow: 'hidden' }}>
 											{skill.skillName}
 										</td>
@@ -333,7 +341,7 @@ export default function SkillsSection({
 									>
 										ADV. (+5 each)
 									</th>
-							
+
 									<th
 										style={{
 											padding: '10px',
@@ -354,7 +362,13 @@ export default function SkillsSection({
 							</thead>
 							<tbody>
 								{specialisations.map((spec, idx) => (
-									<tr key={spec.id} style={{ borderBottom: '1px solid #e2cfaa' }}>
+									<tr
+										key={spec.id}
+										style={{
+											borderBottom: '1px solid #e2cfaa',
+											backgroundColor: idx % 2 === 0 ? '#e9dfcb' : '#f5efdf',
+										}}
+									>
 										<td style={{ padding: '8px' }}>
 											<input
 												type='text'
@@ -382,7 +396,7 @@ export default function SkillsSection({
 												))}
 											</select>
 										</td>
-										
+
 										<td style={{ padding: '8px', textAlign: 'center' }}>
 											<input
 												type='text'

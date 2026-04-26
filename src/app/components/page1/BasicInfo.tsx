@@ -136,7 +136,7 @@ export default function BasicInfoSection({
 										minWidth: '100px',
 									}}
 								></th>
-								{characteristicKeys.map((char) => (
+								{characteristicKeys.map((char, index) => (
 									<th
 										key={char.key}
 										style={{
@@ -164,13 +164,14 @@ export default function BasicInfoSection({
 								>
 									STARTING
 								</td>
-								{characteristicKeys.map((char) => (
+								{characteristicKeys.map((char, index) => (
 									<td
 										key={char.key}
 										style={{
 											padding: '8px',
 											borderBottom: '1px solid #e2cfaa',
 											textAlign: 'center',
+											backgroundColor: index % 2 === 0 ? '#e9dfcb' : '#f5efdf',
 										}}
 									>
 										<input
@@ -196,13 +197,14 @@ export default function BasicInfoSection({
 								>
 									ADVANCES
 								</td>
-								{characteristicKeys.map((char) => (
+								{characteristicKeys.map((char, index) => (
 									<td
 										key={char.key}
 										style={{
 											padding: '8px',
 											borderBottom: '1px solid #e2cfaa',
 											textAlign: 'center',
+											backgroundColor: index % 2 === 0 ? '#e9dfcb' : '#f5efdf',
 										}}
 									>
 										<input
@@ -223,18 +225,19 @@ export default function BasicInfoSection({
 										padding: '8px',
 										borderBottom: '1px solid #e2cfaa',
 										fontWeight: 'bold',
-										backgroundColor: '#e9dfcb',
+										backgroundColor: '#f5efdf',
 									}}
 								>
 									CURRENT
 								</td>
-								{characteristicKeys.map((char) => (
+								{characteristicKeys.map((char, index) => (
 									<td
 										key={char.key}
 										style={{
 											padding: '8px',
 											borderBottom: '1px solid #e2cfaa',
 											textAlign: 'center',
+											backgroundColor: index % 2 === 0 ? '#e9dfcb' : '#f5efdf',
 										}}
 									>
 										<input
