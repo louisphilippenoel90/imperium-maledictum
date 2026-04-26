@@ -13,6 +13,7 @@ import {
 	WeaponsData,
 	ArmourData,
 	EquipmentData,
+	PsychicPowersData,
 	defaultBasicInfo,
 	defaultCharacteristics,
 	defaultFateCorruption,
@@ -22,6 +23,7 @@ import {
 	defaultWeaponsData,
 	defaultArmourData,
 	defaultEquipmentData,
+	defaultPsychicPowersData,
 	SKILLS_LIST,
 } from '@/app/types/sheet';
 import { saveToLocalStorage, loadFromLocalStorage, clearLocalStorage } from '@/app/utils/storage';
@@ -39,6 +41,7 @@ import WoundsSection from './page2/WoundsSection';
 import WeaponsSection from './page2/WeaponsSection';
 import ArmourSection from './page2/ArmourSection';
 import EquipmentSection from './page2/EquipmentSection';
+import PsychicPowersSection from './page2/PsychicPowersSection';
 
 const defaultSpecialisationsData: SpecialisationData[] = [];
 
@@ -53,6 +56,7 @@ function CharacterSheetInner() {
 	const [weapons, setWeapons] = useState<WeaponsData>(defaultWeaponsData);
 	const [armour, setArmour] = useState<ArmourData>(defaultArmourData);
 	const [equipment, setEquipment] = useState<EquipmentData>(defaultEquipmentData);
+	const [psychicPowers, setPsychicPowers] = useState<PsychicPowersData>(defaultPsychicPowersData);
 	const [status, setStatus] = useState('✅ Ready — fill fields, export/import JSON.');
 	const [specialisations, setSpecialisations] = useState<SpecialisationData[]>(
 		defaultSpecialisationsData,
@@ -75,6 +79,7 @@ function CharacterSheetInner() {
 			setWeapons(saved.weapons || defaultWeaponsData);
 			setArmour(saved.armour || defaultArmourData);
 			setEquipment(saved.equipment || defaultEquipmentData);
+			setPsychicPowers(saved.psychicPowers || defaultPsychicPowersData);
 			setSpecialisations(saved.specialisations || defaultSpecialisationsData);
 			setStatus('📀 Loaded previous session from browser storage.');
 			setTimeout(() => setStatus('✅ Ready — fill fields, export/import JSON.'), 3000);
@@ -93,6 +98,7 @@ function CharacterSheetInner() {
 			weapons,
 			armour,
 			equipment,
+			psychicPowers,
 			specialisations,
 		};
 		saveToLocalStorage(fullData);
@@ -106,6 +112,7 @@ function CharacterSheetInner() {
 		weapons,
 		armour,
 		equipment,
+		psychicPowers,
 		specialisations,
 	]);
 
@@ -121,6 +128,7 @@ function CharacterSheetInner() {
 		weapons,
 		armour,
 		equipment,
+		psychicPowers,
 		specialisations,
 		autoSave,
 	]);
@@ -167,6 +175,7 @@ function CharacterSheetInner() {
 			weapons,
 			armour,
 			equipment,
+			psychicPowers,
 			specialisations,
 		};
 		const exportObj = {
@@ -260,6 +269,7 @@ function CharacterSheetInner() {
 					setArmour(migrated);
 				}
 				if (parsed.equipment) setEquipment(parsed.equipment);
+				if (parsed.psychicPowers) setPsychicPowers(parsed.psychicPowers);
 				if (parsed.specialisations && Array.isArray(parsed.specialisations)) {
 					setSpecialisations(parsed.specialisations);
 				}
@@ -284,6 +294,7 @@ function CharacterSheetInner() {
 			setWeapons(defaultWeaponsData);
 			setArmour(defaultArmourData);
 			setEquipment(defaultEquipmentData);
+			setPsychicPowers(defaultPsychicPowersData);
 			setSpecialisations(defaultSpecialisationsData);
 			clearLocalStorage();
 			setStatus('🧹 All fields cleared.');
@@ -422,6 +433,13 @@ function CharacterSheetInner() {
 								</CollapseSection>
 								<CollapseSection title='🎒 EQUIPMENT' defaultOpen={false}>
 									<EquipmentSection showTitle={false} data={equipment} onChange={setEquipment} />
+								</CollapseSection>
+								<CollapseSection title='🧠 PSYCHIC POWERS' defaultOpen={false}>
+									<PsychicPowersSection
+										showTitle={false}
+										data={psychicPowers}
+										onChange={setPsychicPowers}
+									/>
 								</CollapseSection>
 							</>
 						) : null}

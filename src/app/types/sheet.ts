@@ -145,6 +145,23 @@ export interface EquipmentData {
 	encumbranceCurrent: string;
 }
 
+export interface PsychicPowerRow {
+	id: string;
+	name: string;
+	wr: string;
+	dif: string;
+	ran: string;
+	tar: string;
+	dur: string;
+	effect: string;
+}
+
+export interface PsychicPowersData {
+	powers: PsychicPowerRow[];
+	warpChargeCurrent: string;
+	sanctioned: boolean;
+}
+
 export interface CharacterSheetData {
 	basic: BasicInfo;
 	characteristics: Characteristics;
@@ -156,6 +173,7 @@ export interface CharacterSheetData {
 	weapons: WeaponsData;
 	armour: ArmourData;
 	equipment: EquipmentData;
+	psychicPowers: PsychicPowersData;
 }
 
 export const SKILLS_LIST = [
@@ -253,6 +271,12 @@ export const defaultArmourData: ArmourData = {
 export const defaultEquipmentData: EquipmentData = {
 	items: [],
 	encumbranceCurrent: '',
+};
+
+export const defaultPsychicPowersData: PsychicPowersData = {
+	powers: [],
+	warpChargeCurrent: '',
+	sanctioned: false,
 };
 
 export const defaultSkillsData: SkillData[] = SKILLS_LIST.map((skill) => ({
