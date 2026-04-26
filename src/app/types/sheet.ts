@@ -162,6 +162,36 @@ export interface PsychicPowersData {
 	sanctioned: boolean;
 }
 
+export interface PatronInfo {
+	patronName: string;
+	faction: string;
+	duty: string;
+	payGrade: string;
+	motivation: string;
+	demeanour: string;
+}
+
+export interface PatronBoonRow {
+	id: string;
+	name: string;
+	liabilities: string;
+}
+
+export interface PatronInfluenceRow {
+	id: string;
+	faction: string;
+	infl: string;
+	contact: string;
+	intel: string;
+}
+
+export interface PatronPageData {
+	info: PatronInfo;
+	boons: PatronBoonRow[];
+	influences: PatronInfluenceRow[];
+	notes: string;
+}
+
 export interface CharacterSheetData {
 	basic: BasicInfo;
 	characteristics: Characteristics;
@@ -174,6 +204,7 @@ export interface CharacterSheetData {
 	armour: ArmourData;
 	equipment: EquipmentData;
 	psychicPowers: PsychicPowersData;
+	patronPage: PatronPageData;
 }
 
 export const SKILLS_LIST = [
@@ -277,6 +308,20 @@ export const defaultPsychicPowersData: PsychicPowersData = {
 	powers: [],
 	warpChargeCurrent: '',
 	sanctioned: false,
+};
+
+export const defaultPatronPageData: PatronPageData = {
+	info: {
+		patronName: '',
+		faction: '',
+		duty: '',
+		payGrade: '',
+		motivation: '',
+		demeanour: '',
+	},
+	boons: [],
+	influences: [],
+	notes: '',
 };
 
 export const defaultSkillsData: SkillData[] = SKILLS_LIST.map((skill) => ({

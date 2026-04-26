@@ -14,6 +14,7 @@ import {
 	ArmourData,
 	EquipmentData,
 	PsychicPowersData,
+	PatronPageData,
 	defaultBasicInfo,
 	defaultCharacteristics,
 	defaultFateCorruption,
@@ -24,6 +25,7 @@ import {
 	defaultArmourData,
 	defaultEquipmentData,
 	defaultPsychicPowersData,
+	defaultPatronPageData,
 	SKILLS_LIST,
 } from '@/app/types/sheet';
 import { saveToLocalStorage, loadFromLocalStorage, clearLocalStorage } from '@/app/utils/storage';
@@ -42,6 +44,10 @@ import WeaponsSection from './page2/WeaponsSection';
 import ArmourSection from './page2/ArmourSection';
 import EquipmentSection from './page2/EquipmentSection';
 import PsychicPowersSection from './page2/PsychicPowersSection';
+import InfosSection from './page3/InfosSection';
+import BoonsSection from './page3/BoonsSection';
+import InfluenceSection from './page3/InfluenceSection';
+import NotesSection from './page3/NotesSection';
 
 const defaultSpecialisationsData: SpecialisationData[] = [];
 
@@ -57,6 +63,7 @@ function CharacterSheetInner() {
 	const [armour, setArmour] = useState<ArmourData>(defaultArmourData);
 	const [equipment, setEquipment] = useState<EquipmentData>(defaultEquipmentData);
 	const [psychicPowers, setPsychicPowers] = useState<PsychicPowersData>(defaultPsychicPowersData);
+	const [patronPage, setPatronPage] = useState<PatronPageData>(defaultPatronPageData);
 	const [status, setStatus] = useState('✅ Ready — fill fields, export/import JSON.');
 	const [specialisations, setSpecialisations] = useState<SpecialisationData[]>(
 		defaultSpecialisationsData,
@@ -80,6 +87,7 @@ function CharacterSheetInner() {
 			setArmour(saved.armour || defaultArmourData);
 			setEquipment(saved.equipment || defaultEquipmentData);
 			setPsychicPowers(saved.psychicPowers || defaultPsychicPowersData);
+			setPatronPage(saved.patronPage || defaultPatronPageData);
 			setSpecialisations(saved.specialisations || defaultSpecialisationsData);
 			setStatus('📀 Loaded previous session from browser storage.');
 			setTimeout(() => setStatus('✅ Ready — fill fields, export/import JSON.'), 3000);
@@ -99,6 +107,7 @@ function CharacterSheetInner() {
 			armour,
 			equipment,
 			psychicPowers,
+			patronPage,
 			specialisations,
 		};
 		saveToLocalStorage(fullData);
@@ -113,6 +122,7 @@ function CharacterSheetInner() {
 		armour,
 		equipment,
 		psychicPowers,
+		patronPage,
 		specialisations,
 	]);
 
@@ -129,6 +139,7 @@ function CharacterSheetInner() {
 		armour,
 		equipment,
 		psychicPowers,
+		patronPage,
 		specialisations,
 		autoSave,
 	]);
@@ -176,6 +187,7 @@ function CharacterSheetInner() {
 			armour,
 			equipment,
 			psychicPowers,
+			patronPage,
 			specialisations,
 		};
 		const exportObj = {
@@ -270,6 +282,7 @@ function CharacterSheetInner() {
 				}
 				if (parsed.equipment) setEquipment(parsed.equipment);
 				if (parsed.psychicPowers) setPsychicPowers(parsed.psychicPowers);
+				if (parsed.patronPage) setPatronPage(parsed.patronPage);
 				if (parsed.specialisations && Array.isArray(parsed.specialisations)) {
 					setSpecialisations(parsed.specialisations);
 				}
@@ -295,6 +308,7 @@ function CharacterSheetInner() {
 			setArmour(defaultArmourData);
 			setEquipment(defaultEquipmentData);
 			setPsychicPowers(defaultPsychicPowersData);
+			setPatronPage(defaultPatronPageData);
 			setSpecialisations(defaultSpecialisationsData);
 			clearLocalStorage();
 			setStatus('🧹 All fields cleared.');
@@ -445,11 +459,36 @@ function CharacterSheetInner() {
 						) : null}
 
 						{page === 3 ? (
-							<CollapseSection title='🧾 PAGE 3' defaultOpen>
-								<div style={{ color: '#846b44', fontStyle: 'italic' }}>
-									Page 3 is ready. Tell me which sections you want on page 3.
-								</div>
-							</CollapseSection>
+							<>
+								<CollapseSection title='📌 INFOS' defaultOpen={false}>
+									<InfosSection
+										showTitle={false}
+										data={patronPage.info}
+										onChange={(next) => setPatronPage((prev) => ({ ...prev, info: next }))}
+									/>
+								</CollapseSection>
+								<CollapseSection title='✨ BOONS' defaultOpen={false}>
+									<BoonsSection
+										showTitle={false}
+										boons={patronPage.boons}
+										onChange={(next) => setPatronPage((prev) => ({ ...prev, boons: next }))}
+									/>
+								</CollapseSection>
+								<CollapseSection title='🤝 INFLUENCE' defaultOpen={false}>
+									<InfluenceSection
+										showTitle={false}
+										influences={patronPage.influences}
+										onChange={(next) => setPatronPage((prev) => ({ ...prev, influences: next }))}
+									/>
+								</CollapseSection>
+								<CollapseSection title='📝 NOTES' defaultOpen={false}>
+									<NotesSection
+										showTitle={false}
+										value={patronPage.notes}
+										onChange={(next) => setPatronPage((prev) => ({ ...prev, notes: next }))}
+									/>
+								</CollapseSection>
+							</>
 						) : null}
 					</CharacterStatsProvider>
 
