@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { rollDie } from '@/app/utils/dice';
 
 const DICE_TYPES = [
 	{ label: 'D-100', sides: 100 },
@@ -45,7 +46,7 @@ export default function DiceModal({ open, onClose }: DiceModalProps) {
 		if (rolling) return;
 
 		clearRollTimers();
-		const finalResult = Math.floor(Math.random() * sides) + 1;
+		const finalResult = rollDie(sides);
 		setRolling(true);
 		setPulseGeneration(0);
 
