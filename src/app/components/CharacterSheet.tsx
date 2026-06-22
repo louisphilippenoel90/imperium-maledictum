@@ -48,6 +48,7 @@ import NotesSection from './page3/NotesSection';
 
 import CollapseSection from './CollapseSection';
 import ActionButtons from './ActionButtons';
+import DiceModal from './DiceModal';
 
 import { CharacterStatsProvider } from '@/app/context/CharacterStatsContext';
 import { ExportJsonProvider, useExportJson } from '@/app/context/ExportJsonContext';
@@ -56,6 +57,7 @@ const defaultSpecialisationsData: SpecialisationData[] = [];
 
 function CharacterSheetInner() {
 	const [page, setPage] = useState<1 | 2 | 3>(1);
+	const [diceOpen, setDiceOpen] = useState(false);
 	const [basic, setBasic] = useState<BasicInfo>(defaultBasicInfo);
 	const [characteristics, setCharacteristics] = useState<Characteristics>(defaultCharacteristics);
 	const [fateCorruption, setFateCorruption] = useState<FateCorruption>(defaultFateCorruption);
@@ -356,7 +358,15 @@ function CharacterSheetInner() {
 						<p className='italic text-amber-700 text-sm mt-1'>⚔️ CHARACTER SHEET ⚔️</p>
 					</div>
 
-					<div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}>
+					<div
+						style={{
+							display: 'flex',
+							justifyContent: 'center',
+							alignItems: 'center',
+							gap: '12px',
+							marginBottom: '16px',
+						}}
+					>
 						<div
 							style={{
 								display: 'flex',
@@ -387,7 +397,26 @@ function CharacterSheetInner() {
 								</button>
 							))}
 						</div>
+
+						<button
+							type='button'
+							onClick={() => setDiceOpen(true)}
+							style={{
+								background: '#5c3f28',
+								border: '1px solid #cfb87c',
+								borderRadius: '999px',
+								padding: '10px 16px',
+								color: '#fef0df',
+								cursor: 'pointer',
+								fontSize: '0.8rem',
+								fontWeight: 700,
+							}}
+						>
+							🎲 Dice
+						</button>
 					</div>
+
+					<DiceModal open={diceOpen} onClose={() => setDiceOpen(false)} />
 
 					<CharacterStatsProvider characteristics={characteristics}>
 						{page === 1 ? (
